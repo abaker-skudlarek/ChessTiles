@@ -1,0 +1,11 @@
+res://Scenes/board.tscn
+res://Scenes/square_base.tscn
+res://Scenes/light_square.tscn
+res://Scenes/dark_square.tscn
+res://Scenes/Squares/square_base.tscn
+res://Scenes/Squares/light_square.tscn
+res://Scenes/Squares/dark_square.tscn
+res://Scenes/piece.tscn
+res://Scenes/piece.gd
+res://Scripts/piece.gd
+res://Scripts/board.gd

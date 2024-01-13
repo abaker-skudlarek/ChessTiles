@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://3rq00nslphsi"]
+
+[ext_resource type="Script" path="res://Scripts/square_base.gd" id="1_gsoix"]
+
+[node name="SquareBase" type="Sprite2D"]
+script = ExtResource("1_gsoix")
+
+[node name="PieceSpawnPoint" type="Marker2D" parent="."]

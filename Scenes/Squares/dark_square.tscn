@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://dc72dv4vxxx1b"]
+
+[ext_resource type="PackedScene" uid="uid://3rq00nslphsi" path="res://Scenes/Squares/square_base.tscn" id="1_ffite"]
+[ext_resource type="Texture2D" uid="uid://d35gbtvfejm2f" path="res://Sprites/Squares/square_brown_dark.png" id="2_okc0h"]
+
+[node name="DarkSquare" instance=ExtResource("1_ffite")]
+texture = ExtResource("2_okc0h")
