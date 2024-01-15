@@ -1,12 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://6w14jlhqkap5"]
+[gd_scene load_steps=2 format=3 uid="uid://6w14jlhqkap5"]
 
 [ext_resource type="Script" path="res://Scripts/board.gd" id="1_6gofn"]
-[ext_resource type="PackedScene" uid="uid://5spmc2cw3big" path="res://Scenes/Squares/light_square.tscn" id="2_qmxge"]
-[ext_resource type="PackedScene" uid="uid://dc72dv4vxxx1b" path="res://Scenes/Squares/dark_square.tscn" id="3_0awsb"]
-[ext_resource type="PackedScene" uid="uid://c7o1hik3um3hn" path="res://Scenes/piece.tscn" id="4_5b0ry"]
 
 [node name="Board" type="Node"]
 script = ExtResource("1_6gofn")
-light_square_scene = ExtResource("2_qmxge")
-dark_square_scene = ExtResource("3_0awsb")
-piece_scene = ExtResource("4_5b0ry")

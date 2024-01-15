@@ -1,3 +1,7 @@
 res://Scenes
-res://Sprites
 res://Scripts
+res://Scenes/Pieces/Enemy
+res://Scenes/Pieces/Player
+res://Scenes/Pieces
+res://Sprites/Squares
+res://Sprites

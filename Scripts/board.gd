@@ -1,101 +1,70 @@
 extends Node
 
-# -- Constants -- #
-const BOARD_WIDTH:  int = 5  # Number of Squares that make up the width of the board
-const BOARD_HEIGHT: int = 5  # Number of Squares that make up the height of the board
-
-# -- Exported Variables -- #
-@export var light_square_scene: PackedScene
-@export var dark_square_scene: PackedScene
-@export var piece_scene: PackedScene
-
 # -- Variables -- #
-# TODO: Should this be a 2d array?
-var _squares: Array = []  # Array of squares that make up the board
 
-var screen_size: Vector2
+const LIGHT_SQUARE_PATH: CompressedTexture2D = preload("res://Sprites/Squares/square_brown_dark.png")
+const DARK_SQUARE_PATH: CompressedTexture2D = preload("res://Sprites/Squares/square_brown_light.png")
+const GRID_X_START_POSITION: int = 104
+const GRID_Y_START_POSITION: int = 384
+const GRID_OFFSET: int = 128
+const GRID_WIDTH: int = 5
+const GRID_HEIGHT: int = 5
+
+var _board: Array  # Two dimensional array that defines the board
 
 # -- Private Functions -- #
 
-## Called when the node enters the scene tree for the first time.
-func _ready():
-	screen_size = DisplayServer.window_get_size()
+# NOTE: I'm using this function to connect to signals. The reasoning is that I found when using 
+# 		_ready() for connecting, the ordering of the nodes in the scene tree mattered. If Board wasn't
+#		in the top of the scene tree, GameManager would emit the signal before Board could connect 
+#  		to it. I don't know if using _enter_tree to connect to signals is a good idea or not.  		
+func _enter_tree():
+	$"../GameManager".state_changed_start_game.connect(_on_state_changed_start_game)
+		
+# ------------------------------------------------------------------------------------------------ #
 
-	create_board()
+## When the corresponding signal is emitted, perform functions that need to occur at the start of the game
+func _on_state_changed_start_game() -> void:
+	_board = _create_empty_2d_array()
+	_generate_board_background()
+	# TODO: spawn the first two pieces onto the board
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Generate the board background by creating a grid of alternating sprites
+func _generate_board_background() -> void:
+	for i in GRID_WIDTH:
+		for j in GRID_HEIGHT:
+			var sprite = Sprite2D.new()
+			sprite.texture = DARK_SQUARE_PATH if (i + j) % 2 == 0 else LIGHT_SQUARE_PATH
+			sprite.position = _grid_to_pixel(Vector2(i, j))
+			add_child(sprite)
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Creates and returns a 2d array where all values equal null
+func _create_empty_2d_array() -> Array:
+	var array = []
+	for i in GRID_WIDTH:
+		array.append([])
+		for j in GRID_HEIGHT:
+			array[i].append(null) 
+	return array
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Converts a grid position to a pixel position
+func _grid_to_pixel(grid_coordinates: Vector2) -> Vector2:
+	var pixel_x = GRID_X_START_POSITION + (GRID_OFFSET * grid_coordinates.x)
+	var pixel_y = GRID_Y_START_POSITION + (GRID_OFFSET * grid_coordinates.y)
+	return Vector2(pixel_x, pixel_y)
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Converts a pixel position to a grid position
+func _pixel_to_grid(pixel_coordinates: Vector2) -> Vector2:
+	var grid_x = round((pixel_coordinates.x - GRID_X_START_POSITION) / GRID_OFFSET)
+	var grid_y = round((pixel_coordinates.y - GRID_Y_START_POSITION) / GRID_OFFSET)
+	return Vector2(grid_x, grid_y)
 	
-	spawn_piece()
-
-## Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-## Calculates the offsets that are used when placing the board squares in the world
-## Returns: 
-## 	Array: [X axis offset, Y axis offset]
-func _calculate_offsets() -> Array:
-	var temp_square: Sprite2D = light_square_scene.instantiate()
-	var square_texture_size: Vector2 = Vector2(temp_square.texture.get_width() * temp_square.scale.x,
-											   temp_square.texture.get_height() * temp_square.scale.y)
-	
-	var x_axis_offset = (screen_size.x - (square_texture_size.x * BOARD_WIDTH)) / 2
-	var y_axis_offset = (screen_size.y - (square_texture_size.y * BOARD_HEIGHT)) / 2
-	
-	return [x_axis_offset, y_axis_offset]
-
 # -- Public Functions -- #
-
-## Creates the board out of light and dark square scenes
-func create_board():
-	
-	# Calculate the offsets that will be used to determine where to start placing squares on X and Y axis
-	var offsets: Array = _calculate_offsets()
-	var width_offset = offsets[0]
-	var height_offset = offsets[1]
-	
-	# Get the texture size of the square
-	var temp_square: Sprite2D = light_square_scene.instantiate()
-	var square_texture_size: Vector2 = temp_square.get_texture_size()
-				
-	# Instantiate and spawn the squares
-	for i in range(0, BOARD_HEIGHT):
-		
-		# Reset the offsets after spawning an entire line of squares
-		height_offset += square_texture_size.y / 2 if i == 0 else square_texture_size.y
-		width_offset = offsets[0]
-		
-		for j in range(0, BOARD_WIDTH):
-			
-			# Alternate square color
-			var spawned_square: Sprite2D
-			if (i + j) % 2 == 0:
-				spawned_square = light_square_scene.instantiate()
-			else:
-				spawned_square = dark_square_scene.instantiate()
-				
-			# Add the spawned square to our array of spawned squares
-			_squares.append(spawned_square)
-			
-			# Update the width offset before changing the position of the square
-			width_offset += square_texture_size.x / 2 if j == 0 else square_texture_size.x
-			
-			# Update the position of the square using the updated width and height offsets
-			spawned_square.position = Vector2(width_offset, height_offset)
-			
-			# Finally, add the square to the scene
-			add_child(spawned_square) 
-
-# TODO: Probably shouldn't do this in the Board script. Maybe in a game manager script?
-func spawn_piece():
-	print("Instantiate")
-	var spawned_piece = piece_scene.instantiate()
-	print("Instantiated")
-	
-	spawned_piece.position = Vector2(360, 540)
-	
-	print("Add child")	
-	add_child(spawned_piece)
-	spawned_piece.update_texture("knight")
-	print("added child")	
-	
-	
-	

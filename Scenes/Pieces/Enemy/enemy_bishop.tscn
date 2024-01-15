@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://q12o7wevgyn3"]
+
+[ext_resource type="PackedScene" uid="uid://cb3swvs5fb3cc" path="res://Scenes/Pieces/Enemy/enemy_piece_base.tscn" id="1_ht22j"]
+[ext_resource type="Texture2D" uid="uid://c3p28fgvxncvn" path="res://Sprites/Enemy/b_bishop.png" id="2_h2oo0"]
+
+[node name="EnemyBishop" instance=ExtResource("1_ht22j")]
+value = 3
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_h2oo0")
