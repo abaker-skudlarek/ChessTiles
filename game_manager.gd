@@ -30,6 +30,8 @@ var _current_state: GameState
 # -- Private Functions -- #
 
 func _ready():
+	# TODO: This will be moved somewhere else once we get a title screen. When "start game" is pressed, 
+	# 		the state will be changed
 	_change_state(GameState.START_GAME)
 
 # ------------------------------------------------------------------------------------------------ #
