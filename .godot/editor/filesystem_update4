@@ -1,7 +1,6 @@
 res://Scenes/main.tscn
 res://Scripts/board.gd
-res://game_manager.gd
 res://Scripts/temp.gd
+res://temp.tscn
 res://Scenes/game_manager.tscn
 res://Scenes/board.tscn
-res://temp.tscn

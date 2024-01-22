@@ -101,6 +101,16 @@ func _spawn_pieces(pieces_to_spawn: Array):
 ## Returns num_spaces number of random empty spaces on the board
 func _get_random_empty_board_spaces(num_spaces: int) -> Array:
 	# TODO: remove all elements from the array in which the element != null
+	var temp_array: Array = _board.duplicate(true) # true = makes a deep copy of the array
+	
+	# TODO: don't think this will work actually. we want to remove everything that isn't null. erase expects a value to find and erase
+	for i in temp_array.size():
+		for j in temp_array[i].size():
+			if j != null:
+				temp_array[i].remove_at(j)
+	
+				
+			
 	# TODO: for every number of spaces we need
 	# TODO: 	choose 2 random numbers. one to determine which array, and one to determine which element of the inner array
 	# TODO: 	ensure that we don't chose the same set of numbers twice
