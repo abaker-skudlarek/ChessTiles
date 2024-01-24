@@ -32,15 +32,17 @@ func _ready():
 	for i in array.size():
 		print("i: ", str(i))
 		for j in array[i].size():
-			print("j: " + str(j))
+			print("j: ", str(j))
 			if array[i][j] != null:
 				temp_array[i].remove_at(j)	
-	
-	
 	
 	print("removed temp_array")
 	print(temp_array)
 	print("")
+
+
+	for i in 50:
+		print("num: ", randi() % 101)
 
 	
 	

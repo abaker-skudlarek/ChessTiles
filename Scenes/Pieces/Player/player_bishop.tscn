@@ -5,8 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dcaii0xlt8r36" path="res://Scenes/Pieces/Player/player_knight.tscn" id="2_y1fdy"]
 
 [node name="PlayerBishop" instance=ExtResource("1_ejgrv")]
+scale = Vector2(1, 1)
+texture = ExtResource("2_evsok")
 value = 3
 next_piece = ExtResource("2_y1fdy")
-
-[node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_evsok")

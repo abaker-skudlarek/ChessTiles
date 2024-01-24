@@ -3,9 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/enemy_piece_base.gd" id="1_dsfhh"]
 [ext_resource type="Texture2D" uid="uid://bleeup1fdwl0j" path="res://icon.svg" id="2_8nfsi"]
 
-[node name="EnemyPieceBase" type="Node"]
-script = ExtResource("1_dsfhh")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D"]
 scale = Vector2(0.125, 0.125)
 texture = ExtResource("2_8nfsi")
+script = ExtResource("1_dsfhh")

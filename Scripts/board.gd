@@ -31,6 +31,8 @@ var _board: Array  # Two dimensional array that defines the board
 
 # -- Private Functions -- #
 
+# ------------------------------------------------------------------------------------------------ #
+
 # NOTE: I'm using this function to connect to signals. The reasoning is that I found when using 
 # 		_ready() for connecting, the ordering of the nodes in the scene tree mattered. If Board wasn't
 #		in the top of the scene tree, GameManager would emit the signal before Board could connect 
@@ -40,14 +42,17 @@ var _board: Array  # Two dimensional array that defines the board
 # 		function
 func _enter_tree():
 	$"../GameManager".state_changed_start_game.connect(_on_state_changed_start_game)
-		
+
 # ------------------------------------------------------------------------------------------------ #
 
 ## Perform functions that need to occur at the start of the game
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
 	_generate_board_background()
-	_spawn_pieces()
+	# TODO: figure out a way to decide what piece(s) we want to spawn. spawn_pieces should probably 
+	# 		handle that, for now. We should only pass in the amount of pieces we want to spawn, and 
+	# 		then spawn_pieces will figure out which ones, where, and handle the actual spawning
+	_spawn_pieces(2)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -89,34 +94,47 @@ func _pixel_to_grid(pixel_coordinates: Vector2) -> Vector2:
 	
 # ------------------------------------------------------------------------------------------------ #
 
-## Spawns pieces onto the board. 
-## 	pieces_to_spawn is an Array of piece scenes that we want to spawn
-func _spawn_pieces(pieces_to_spawn: Array):
-	# TODO: get random spaces that are available on the board (equal to the amount of pieces we want to spawn)
-	# TODO: for each random space
-	# TODO: 	spawn the corresponding piece on that space
+## Spawns pieces onto the board
+# TODO: Need to implement spawning of enemy pieces
+func _spawn_pieces(num_pieces_to_spawn: int):
+	
+	var empty_spaces: Array = _get_random_empty_board_spaces(num_pieces_to_spawn)
+	print("empty_spaces: ", empty_spaces)
+	
+	for i in num_pieces_to_spawn:
+		# TODO: eventually, we need a more sophisticated way to determine what pieces to spawn. something like a 
+		# 		class that will evaluate what state the board is in and spawn pieces based on that.
+		# 		Can be based on how well the player is doing, how many other pieces there are already, etc
+		var spawn_chance = randi() % 101  # random int between 0 and 100
+		
+		# TODO:
+		# TODO: THIS IS NOT WORKING FOR SOME REASON
+		# TODO:
+		var piece_to_spawn = player_pieces["pawn"] if spawn_chance <= 60 else player_pieces["bishop"]  # 60% chance to spawn pawn, 40% to spawn bishop
+		piece_to_spawn.instantiate()
+		piece_to_spawn.position = Vector2(empty_spaces[i].x, empty_spaces[i].y)
+		add_child(piece_to_spawn)
 	
 # ------------------------------------------------------------------------------------------------ #
 
-## Returns num_spaces number of random empty spaces on the board
+## Returns num_spaces amount of random empty spaces on the board
 func _get_random_empty_board_spaces(num_spaces: int) -> Array:
-	# TODO: remove all elements from the array in which the element != null
-	var temp_array: Array = _board.duplicate(true) # true = makes a deep copy of the array
 	
-	# TODO: don't think this will work actually. we want to remove everything that isn't null. erase expects a value to find and erase
-	for i in temp_array.size():
-		for j in temp_array[i].size():
-			if j != null:
-				temp_array[i].remove_at(j)
+	# Find all of the empty spaces on the board
+	var empty_spaces: Array = []  # Every element in this array will be a Vector2 pertaining to the pixel position of the space
+	for i in GRID_WIDTH:
+		for j in GRID_HEIGHT:
+			if _board[i][j] == null:
+				empty_spaces.append(_grid_to_pixel(Vector2(i, j)))
 	
-				
-			
-	# TODO: for every number of spaces we need
-	# TODO: 	choose 2 random numbers. one to determine which array, and one to determine which element of the inner array
-	# TODO: 	ensure that we don't chose the same set of numbers twice
-	# TODO: 	add the board space to an array (or maybe the coordinates of the board space??) Vector2()?
-	# TODO: return the array
+	# Randomize the empty spaces
+	empty_spaces.shuffle()
 	
+	# Return a slice of the array from the first element to the amount of spaces we want
+	return empty_spaces.slice(0, num_spaces)
+
+# ------------------------------------------------------------------------------------------------ #	
+
 # -- Public Functions -- #
 
 

@@ -5,8 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://ddb3mvx67epsl" path="res://Sprites/Player/w_knight.png" id="2_twe6k"]
 
 [node name="PlayerKnight" instance=ExtResource("1_ki6sf")]
+scale = Vector2(1, 1)
+texture = ExtResource("2_twe6k")
 value = 3
 next_piece = ExtResource("2_5rsmk")
-
-[node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_twe6k")

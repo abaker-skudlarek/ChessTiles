@@ -5,8 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dcd7im7d1646h" path="res://Scenes/Pieces/Player/player_king.tscn" id="2_e3l80"]
 
 [node name="player_queen" instance=ExtResource("1_7f82r")]
+scale = Vector2(1, 1)
+texture = ExtResource("2_86oae")
 value = 9
 next_piece = ExtResource("2_e3l80")
-
-[node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_86oae")

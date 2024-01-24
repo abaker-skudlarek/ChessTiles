@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://b2ilap5plc1cg" path="res://Sprites/Enemy/b_king.png" id="2_hmgrl"]
 
 [node name="EnemyKing" instance=ExtResource("1_tf1g7")]
-value = 20
-
-[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(1, 1)
 texture = ExtResource("2_hmgrl")
+value = 20

@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://bce3jc36srac8" path="res://Sprites/Enemy/b_pawn.png" id="2_qh1bo"]
 
 [node name="EnemyPawn" instance=ExtResource("1_el0t1")]
-value = 1
-
-[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(1, 1)
 texture = ExtResource("2_qh1bo")
+value = 1
