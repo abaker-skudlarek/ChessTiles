@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bstl14n7exglv"]
-
-[ext_resource type="Script" path="res://game_manager.gd" id="1_w4ds5"]
-
-[node name="GameManager" type="Node"]
-script = ExtResource("1_w4ds5")

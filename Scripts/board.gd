@@ -40,7 +40,7 @@ var _board: Array  # Two dimensional array that defines the board
 # TODO: We can probably add this back to the _ready() function once we have a "start game" screen,
 # 		because then GameManager will emit the signal whenever that is hit, instead of in it's _ready()
 # 		function
-func _enter_tree():
+func _enter_tree() -> void:
 	$"../GameManager".state_changed_start_game.connect(_on_state_changed_start_game)
 
 # ------------------------------------------------------------------------------------------------ #
@@ -98,22 +98,24 @@ func _pixel_to_grid(pixel_coordinates: Vector2) -> Vector2:
 # TODO: Need to implement spawning of enemy pieces
 func _spawn_pieces(num_pieces_to_spawn: int):
 	
+	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn
 	var empty_spaces: Array = _get_random_empty_board_spaces(num_pieces_to_spawn)
-	print("empty_spaces: ", empty_spaces)
 	
-	for i in num_pieces_to_spawn:
-		# TODO: eventually, we need a more sophisticated way to determine what pieces to spawn. something like a 
+	# TODO: eventually, we need a more sophisticated way to determine what pieces to spawn. something like a 
 		# 		class that will evaluate what state the board is in and spawn pieces based on that.
 		# 		Can be based on how well the player is doing, how many other pieces there are already, etc
-		var spawn_chance = randi() % 101  # random int between 0 and 100
+	
+	for i in num_pieces_to_spawn:
+		# Get a number between 0 and 100, this will be used to determine which piece to spawn
+		var spawn_chance = randi() % 101 
 		
-		# TODO:
-		# TODO: THIS IS NOT WORKING FOR SOME REASON
-		# TODO:
-		var piece_to_spawn = player_pieces["pawn"] if spawn_chance <= 60 else player_pieces["bishop"]  # 60% chance to spawn pawn, 40% to spawn bishop
-		piece_to_spawn.instantiate()
-		piece_to_spawn.position = Vector2(empty_spaces[i].x, empty_spaces[i].y)
-		add_child(piece_to_spawn)
+		# Determine which piece to spawn based on the spawn_chance. 75% to spawn pawn, 25% to spawn bishop
+		var piece_to_spawn = player_pieces["pawn"] if spawn_chance <= 75 else player_pieces["bishop"] 
+		
+		# Spawn the piece and adjust its position to the corresponding empty spaces
+		var piece = piece_to_spawn.instantiate()
+		piece.position = Vector2(empty_spaces[i].x, empty_spaces[i].y)
+		add_child(piece)
 	
 # ------------------------------------------------------------------------------------------------ #
 
@@ -121,7 +123,7 @@ func _spawn_pieces(num_pieces_to_spawn: int):
 func _get_random_empty_board_spaces(num_spaces: int) -> Array:
 	
 	# Find all of the empty spaces on the board
-	var empty_spaces: Array = []  # Every element in this array will be a Vector2 pertaining to the pixel position of the space
+	var empty_spaces := []  # Every element in this array will be a Vector2 pertaining to the pixel position of the space
 	for i in GRID_WIDTH:
 		for j in GRID_HEIGHT:
 			if _board[i][j] == null:

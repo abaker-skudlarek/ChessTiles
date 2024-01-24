@@ -4,6 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://c3p28fgvxncvn" path="res://Sprites/Enemy/b_bishop.png" id="2_h2oo0"]
 
 [node name="EnemyBishop" instance=ExtResource("1_ht22j")]
-scale = Vector2(1, 1)
+scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_h2oo0")
 value = 3
