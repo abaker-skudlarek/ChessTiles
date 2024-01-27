@@ -8,14 +8,6 @@ state that the game is now in.
 
 # -- Variables -- #
 
-# TODO: Might not need every single one of these
-signal state_changed_start_game
-signal state_changed_waiting_user_input
-signal state_changed_slide_move
-signal state_changed_chess_move
-signal state_changed_win
-signal state_changed_lose
-
 enum GameState {
 	START_GAME,
 	WAITING_USER_INPUT,
@@ -44,17 +36,17 @@ func _change_state(new_state: GameState):
 
 	match _current_state:
 		GameState.START_GAME:
-			state_changed_start_game.emit()
+			SignalBus.emit_signal("state_changed_start_game")
 		GameState.WAITING_USER_INPUT:
-			state_changed_waiting_user_input.emit()
+			SignalBus.emit_signal("state_changed_waiting_user_input")
 		GameState.SLIDE_MOVE:
-			state_changed_slide_move.emit()
+			SignalBus.emit_signal("state_changed_slide_move")
 		GameState.CHESS_MOVE:
-			state_changed_chess_move.emit()
+			SignalBus.emit_signal("state_changed_chess_move")
 		GameState.WIN:
-			state_changed_win.emit()
+			SignalBus.emit_signal("state_changed_win")
 		GameState.LOSE:
-			state_changed_lose.emit()
+			SignalBus.emit_signal("state_changed_lose")
 
 # -- Public Functions -- #
 

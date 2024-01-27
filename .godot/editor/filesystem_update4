@@ -20,3 +20,7 @@ res://Scenes/Managers/input_manager.tscn
 res://Scripts/input_manager.gd
 res://Scenes/Managers/game_manager.tscn
 res://Scenes/temp.tscn
+res://Scenes/Managers/signal_bus.tscn
+res://Scripts/signal_bus.gd
+res://Scripts/game_manager.gd
+res://Scripts/player_piece_base.gd
