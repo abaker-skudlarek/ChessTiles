@@ -16,7 +16,10 @@ config/features=PackedStringArray("4.2", "Forward Plus")
 
 [autoload]
 
-SignalBus="*res://Scripts/signal_bus.gd"
+SignalBus="*res://Scripts/Managers/signal_bus.gd"
+ResourceManager="*res://Scenes/Managers/resource_manager.tscn"
+GameManager="*res://Scenes/Managers/game_manager.tscn"
+InputManager="*res://Scenes/Managers/input_manager.tscn"
 
 [display]
 

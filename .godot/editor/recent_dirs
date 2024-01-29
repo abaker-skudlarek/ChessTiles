@@ -1,5 +1,8 @@
-res://Scripts
+res://Scenes/UI
+res://Scripts/UI
 res://Scenes/Managers
+res://Scripts/Managers
+res://Scripts
 res://
 res://Scenes
 res://Scenes/Pieces/Enemy

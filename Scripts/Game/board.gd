@@ -1,6 +1,8 @@
 extends Node
 
+# ------------------------------------------------------------------------------------------------ #
 # -- Variables -- #
+# ------------------------------------------------------------------------------------------------ #
 
 const LIGHT_SQUARE_PATH: CompressedTexture2D = preload("res://Sprites/Squares/square_brown_dark.png")
 const DARK_SQUARE_PATH: CompressedTexture2D = preload("res://Sprites/Squares/square_brown_light.png")
@@ -13,25 +15,8 @@ const GRID_HEIGHT: int = 5
 var _board: Array # Two dimensional array that defines the board
 var _pieces_on_board: Array = [] # Array containing the pieces that are currently on the board. This includes Player and Enemy pieces
 
-@onready var player_pieces: Dictionary = {
-	"pawn": preload("res://Scenes/Pieces/Player/player_pawn.tscn"),
-	"bishop": preload("res://Scenes/Pieces/Player/player_bishop.tscn"),
-	"knight": preload("res://Scenes/Pieces/Player/player_knight.tscn"),
-	"rook": preload("res://Scenes/Pieces/Player/player_rook.tscn"),
-	"queen": preload("res://Scenes/Pieces/Player/player_queen.tscn"),
-	"king": preload("res://Scenes/Pieces/Player/player_king.tscn")
-}
-@onready var enemy_pieces: Dictionary = {
-	"pawn": preload("res://Scenes/Pieces/Enemy/enemy_pawn.tscn"),
-	"bishop": preload("res://Scenes/Pieces/Enemy/enemy_bishop.tscn"),
-	"knight": preload("res://Scenes/Pieces/Enemy/enemy_knight.tscn"),
-	"rook": preload("res://Scenes/Pieces/Enemy/enemy_rook.tscn"),
-	"queen": preload("res://Scenes/Pieces/Enemy/enemy_queen.tscn"),
-	"king": preload("res://Scenes/Pieces/Enemy/enemy_king.tscn")
-}
-
+# ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
-
 # ------------------------------------------------------------------------------------------------ #
 
 # NOTE: I'm using this function to connect to signals. The reasoning is that I found when using 
@@ -56,10 +41,11 @@ func _enter_tree() -> void:
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
 func _slide_move(direction_to_move: Vector2) -> void:
 	
+	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
+	
 	# TODO: NEED TO IMPLEMENT MERGING PIECES WHEREVER THAT APPLIES	
 	
-	# TODO: THIS IS ONE OF THE UGLIEST PIECES OF CODE I'VE EVER WRITTEN
-	# TODO: Please for the love of god do not keep this. You're better than that.
+	# TODO: REWRITE THIS TO BE MORE READABLE. Don't worry too much about efficiency, it's a small board
 	if direction_to_move == Vector2.RIGHT:
 		for i in range(_board.size() - 1, -1, -1):
 			for j in _board[i].size():
@@ -70,8 +56,7 @@ func _slide_move(direction_to_move: Vector2) -> void:
 													current_grid_position.y + direction_to_move.y)
 					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						var piece_moved = _move_piece(current_grid_position, new_grid_position)
-	
+						_move_piece(current_grid_position, new_grid_position)
 	elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
 		for i in _board.size():
 			for j in _board[i].size():
@@ -82,8 +67,7 @@ func _slide_move(direction_to_move: Vector2) -> void:
 													current_grid_position.y + direction_to_move.y)
 					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						var piece_moved = _move_piece(current_grid_position, new_grid_position)
-	
+						_move_piece(current_grid_position, new_grid_position)
 	elif direction_to_move == Vector2.DOWN:
 		for i in _board.size():
 			for j in range(_board[i].size() - 1, -1, -1):
@@ -93,7 +77,9 @@ func _slide_move(direction_to_move: Vector2) -> void:
 													current_grid_position.y + direction_to_move.y)
 					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						var piece_moved = _move_piece(current_grid_position, new_grid_position)
+						_move_piece(current_grid_position, new_grid_position)
+
+	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -107,7 +93,18 @@ func _move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: 
 		var piece = _board[current_piece_grid_location.x][current_piece_grid_location.y]
 		_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
 		_board[new_piece_grid_location.x][new_piece_grid_location.y] = piece
-		piece.position = _grid_to_pixel(new_piece_grid_location)
+		
+		# TODO: This makes the sprite move to the final position in .5 seconds
+		# TODO: A few problems/improvements with this:
+		# 		  1. The player can input a new direction DURING the tween, so the pieces then move
+		# 			 diagonally, which we do not want
+		# 		  2. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
+		# 			 
+		var tween := create_tween()
+		tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .5).set_trans(Tween.TRANS_EXPO)
+		
+		#piece.position = _grid_to_pixel(new_piece_grid_location)
+		
 		return true
 
 # ------------------------------------------------------------------------------------------------ #
@@ -128,7 +125,7 @@ func _spawn_pieces(num_pieces_to_spawn: int):
 		var spawn_chance = randi() % 101 
 		
 		# Determine which piece to spawn based on the spawn_chance. 75% to spawn pawn, 25% to spawn bishop
-		var piece_to_spawn = player_pieces["pawn"] if spawn_chance <= 75 else player_pieces["bishop"] 
+		var piece_to_spawn = ResourceManager.player_pieces["pawn"] if spawn_chance <= 75 else ResourceManager.player_pieces["bishop"] 
 		
 		# Spawn the piece and adjust its position to the corresponding empty spaces
 		var piece = piece_to_spawn.instantiate()
@@ -205,39 +202,39 @@ func _is_square_occupied(grid_coordinates: Vector2) -> bool:
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
 	_generate_board_background()
-	# TODO: figure out a way to decide what piece(s) we want to spawn. spawn_pieces should probably 
-	# 		handle that, for now. We should only pass in the amount of pieces we want to spawn, and 
-	# 		then spawn_pieces will figure out which ones, where, and handle the actual spawning
 	_spawn_pieces(2)
+	
+	# TODO: We are allowing the board scene to change the state of the game, using the GameManager Singleton.
+	# 		I honestly don't know if this is good or not. Any script can change the state using GameManager,
+	# 		and that scares me. But, maybe it's not a bad thing. I'm not going to focus too hard on
+	# 		over-engineering a perfect solution until it matter.
+	# 		So, whether it's good or not, I will be allowing this. Maybe some day it will change when
+	# 		I understand more about Godot.
+	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_left() -> void:
-	print("slide move left heard in board.gd")
 	_slide_move(Vector2.LEFT)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_right() -> void:
-	print("slide move right heard in board.gd")
 	_slide_move(Vector2.RIGHT)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_up() -> void:
-	print("slide move up heard in board.gd")
 	_slide_move(Vector2.UP)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_down() -> void:
-	print("slide move down heard in board.gd")
 	_slide_move(Vector2.DOWN)
 
 # ------------------------------------------------------------------------------------------------ #
-
 # -- Public Functions -- #
-
+# ------------------------------------------------------------------------------------------------ #
 
 
 
