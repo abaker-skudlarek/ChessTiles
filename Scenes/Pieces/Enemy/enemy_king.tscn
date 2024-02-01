@@ -6,4 +6,5 @@
 [node name="EnemyKing" instance=ExtResource("1_tf1g7")]
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_hmgrl")
+piece_name = "enemy_king"
 value = 20

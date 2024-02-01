@@ -41,7 +41,7 @@ func _ready() -> void:
 func change_state(new_state: GameState) -> void:
 	_current_state = new_state
 	
-	print("_current_state = ", GameState.keys()[new_state])
+	#print("_current_state = ", GameState.keys()[new_state])
 
 	match _current_state:
 		GameState.START_GAME:

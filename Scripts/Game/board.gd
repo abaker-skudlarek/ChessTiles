@@ -11,6 +11,7 @@ const GRID_Y_START_POSITION: int = 384
 const GRID_OFFSET: int = 128
 const GRID_WIDTH: int = 5
 const GRID_HEIGHT: int = 5
+const NONE: String = "NONE"
 
 var _board: Array # Two dimensional array that defines the board
 var _pieces_on_board: Array = [] # Array containing the pieces that are currently on the board. This includes Player and Enemy pieces
@@ -43,31 +44,26 @@ func _slide_move(direction_to_move: Vector2) -> void:
 	
 	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
 	
-	# TODO: NEED TO IMPLEMENT MERGING PIECES WHEREVER THAT APPLIES	
-	
 	# TODO: REWRITE THIS TO BE MORE READABLE. Don't worry too much about efficiency, it's a small board
 	if direction_to_move == Vector2.RIGHT:
 		for i in range(_board.size() - 1, -1, -1):
 			for j in _board[i].size():
 				var current_grid_position = Vector2(i, j)
-				
 				if _is_square_occupied(current_grid_position):
 					var new_grid_position = Vector2(current_grid_position.x + direction_to_move.x,
 													current_grid_position.y + direction_to_move.y)
-					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						_move_piece(current_grid_position, new_grid_position)
+						_slide_move_piece(current_grid_position, new_grid_position)
 	elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
 		for i in _board.size():
 			for j in _board[i].size():
 				var current_grid_position = Vector2(i, j)
-				
 				if _is_square_occupied(current_grid_position):
 					var new_grid_position = Vector2(current_grid_position.x + direction_to_move.x,
 													current_grid_position.y + direction_to_move.y)
-					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						_move_piece(current_grid_position, new_grid_position)
+						_slide_move_piece(current_grid_position, new_grid_position)
+						
 	elif direction_to_move == Vector2.DOWN:
 		for i in _board.size():
 			for j in range(_board[i].size() - 1, -1, -1):
@@ -77,41 +73,71 @@ func _slide_move(direction_to_move: Vector2) -> void:
 													current_grid_position.y + direction_to_move.y)
 					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						_move_piece(current_grid_position, new_grid_position)
+						_slide_move_piece(current_grid_position, new_grid_position)
 
 	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
-## Generically moves a piece from the current_piece_grid_location to the new_piece_grid_location.
-## Returns True if the piece was moved, False if the piece was not moved
-func _move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> bool:
+## Moves a piece using a slide move from the current_piece_grid_location to the new_piece_grid_location.
+func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> void:
+	# If the new grid location to move to is occupied, either merge the pieces or don't perform the movement
 	if _is_square_occupied(new_piece_grid_location):
-		print(new_piece_grid_location, " is occupied, cannot move piece to it!")
-		return false
+		
+		# if there is a piece of the same value as the current piece, merge them
+		var piece_at_current_grid_location = _board[current_piece_grid_location.x][current_piece_grid_location.y]
+		var piece_at_new_grid_location = _board[new_piece_grid_location.x][new_piece_grid_location.y]
+		
+		# If the piece at the current grid location and the new grid location are the same, merge them
+		if piece_at_current_grid_location.piece_name == piece_at_new_grid_location.piece_name:
+			
+			# If the pieces that we are merging have a next piece name of "NONE", don't merge, because
+			# there aren't any pieces after this one. This usually means that we have two kings merging
+			if piece_at_new_grid_location.next_piece_name == NONE:
+				return
+			
+			GameManager.change_state(GameManager.GameState.MERGING)
+			
+			# Remove both pieces from _board and _pieces_on_board
+			_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
+			_board[new_piece_grid_location.x][new_piece_grid_location.y] = null	
+			_pieces_on_board.erase(piece_at_current_grid_location)  # TODO: Not sure if erase() is what we want here or not
+			_pieces_on_board.erase(piece_at_new_grid_location)      # TODO: Not sure if erase() is what we want here or not
+
+			_spawn_piece_at_grid_position(new_piece_grid_location, "player", piece_at_new_grid_location.next_piece_name)
+			
+			# Delete the pieces that are merging
+			piece_at_current_grid_location.queue_free()
+			piece_at_new_grid_location.queue_free()
+			
+			GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
+		
+		# If the new grid location is occupied and the pieces don't match, do nothing and return. No movement should happen
+		else:
+			return
+		
+	# If the new grid location to move to is not occupied, move the piece to the new locaation
 	else:
 		var piece = _board[current_piece_grid_location.x][current_piece_grid_location.y]
 		_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
 		_board[new_piece_grid_location.x][new_piece_grid_location.y] = piece
 		
-		# TODO: This makes the sprite move to the final position in .5 seconds
+		# TODO: This makes the sprite move to the final position in the set amount of time
 		# TODO: A few problems/improvements with this:
-		# 		  1. The player can input a new direction DURING the tween, so the pieces then move
-		# 			 diagonally, which we do not want
-		# 		  2. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
-		# 			 
-		var tween := create_tween()
-		tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .5).set_trans(Tween.TRANS_EXPO)
+		# 		  1. The player can input a new direction DURING the tween, so the pieces change their 
+		# 			 direction before the tween ends
+		# 		  2. The player can input a diagonal direction, causing the pieces to move diagonally, 
+		# 			 which we do not want
+		# 		  3. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
+		var move_tween := create_tween()
+		#move_tween.connect("finished", _on_move_tween_finished) # TODO: This didn't seem to work like I wanted
+		move_tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_EXPO)
 		
-		#piece.position = _grid_to_pixel(new_piece_grid_location)
-		
-		return true
-
 # ------------------------------------------------------------------------------------------------ #
 
 ## Spawns pieces onto the board
 # TODO: Need to implement spawning of enemy pieces
-func _spawn_pieces(num_pieces_to_spawn: int):
+func _spawn_pieces_at_random_positions(num_pieces_to_spawn: int):
 	
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
 	var empty_spaces: Array = _get_random_empty_board_spaces(num_pieces_to_spawn)
@@ -127,14 +153,30 @@ func _spawn_pieces(num_pieces_to_spawn: int):
 		# Determine which piece to spawn based on the spawn_chance. 75% to spawn pawn, 25% to spawn bishop
 		var piece_to_spawn = ResourceManager.player_pieces["pawn"] if spawn_chance <= 75 else ResourceManager.player_pieces["bishop"] 
 		
-		# Spawn the piece and adjust its position to the corresponding empty spaces
-		var piece = piece_to_spawn.instantiate()
+		# Spawn the piece based on the random chance and set it's position to the empty_space we're on
 		var grid_position = _pixel_to_grid(Vector2(empty_spaces[i].x, empty_spaces[i].y))
-		_board[grid_position.x][grid_position.y] = piece
-		piece.position = Vector2(empty_spaces[i].x, empty_spaces[i].y)
-		_pieces_on_board.append(piece)
-		add_child(piece)
+		if spawn_chance <= 75:
+			_spawn_piece_at_grid_position(grid_position, "player", "pawn")
+		else:
+			_spawn_piece_at_grid_position(grid_position, "player", "bishop")
 	
+# ------------------------------------------------------------------------------------------------ #
+
+## Spawn a piece at the grid position specified. 
+## piece_family is "enemy" or "player"
+## piece_name is "pawn", "bishop", "knight", "rook", "queen", "king"
+func _spawn_piece_at_grid_position(grid_position: Vector2, piece_family: String, piece_name: String):
+	
+	# Determine our piece to spawn based on the options passed in
+	var piece_to_spawn = ResourceManager.player_pieces[piece_name] if piece_family == "player" else ResourceManager.enemy_pieces[piece_name]
+		
+	# Instantiate and spawn our piece at the given position
+	var piece = piece_to_spawn.instantiate()
+	_board[grid_position.x][grid_position.y] = piece
+	piece.position = _grid_to_pixel(grid_position)
+	_pieces_on_board.append(piece)
+	add_child(piece)
+
 # ------------------------------------------------------------------------------------------------ #
 
 ## Generate the board background by creating a grid of alternating sprites
@@ -202,7 +244,7 @@ func _is_square_occupied(grid_coordinates: Vector2) -> bool:
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
 	_generate_board_background()
-	_spawn_pieces(2)
+	_spawn_pieces_at_random_positions(2)
 	
 	# TODO: We are allowing the board scene to change the state of the game, using the GameManager Singleton.
 	# 		I honestly don't know if this is good or not. Any script can change the state using GameManager,
@@ -231,6 +273,13 @@ func _on_slide_move_up() -> void:
 
 func _on_slide_move_down() -> void:
 	_slide_move(Vector2.DOWN)
+
+# ------------------------------------------------------------------------------------------------ #
+
+### Change the game state to waiting for user input after the move tween is finished.
+### Doing this because we do not want the player to be able to move the pieces while a tween is in progress
+#func _on_move_tween_finished() -> void:
+	#GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #

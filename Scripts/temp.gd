@@ -1,13 +1,9 @@
 extends Node
 
 func _ready():
-	var a = [[1,2,3], [4,5,6], [7,8,9]]
-	print(a)
+	var a: Array = [1, 2, 3, 4]
 	
-	for i in a.size():
-		a[i].reverse()
-	a.reverse()
-	print(a)
-	
-	
+	print("a: ", a)
+	a.erase(3)
+	print("a: ", a)
 	

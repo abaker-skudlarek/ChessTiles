@@ -1,11 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://f2f6l1kuagow"]
+[gd_scene load_steps=3 format=3 uid="uid://f2f6l1kuagow"]
 
 [ext_resource type="PackedScene" uid="uid://cvn0p8a62h25h" path="res://Scenes/Pieces/Player/player_piece_base.tscn" id="1_7f82r"]
 [ext_resource type="Texture2D" uid="uid://n2tuvo88oga4" path="res://Sprites/Player/w_queen.png" id="2_86oae"]
-[ext_resource type="PackedScene" uid="uid://dcd7im7d1646h" path="res://Scenes/Pieces/Player/player_king.tscn" id="2_e3l80"]
 
 [node name="player_queen" instance=ExtResource("1_7f82r")]
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_86oae")
 value = 9
-next_piece = ExtResource("2_e3l80")
+piece_name = "player_queen"
+next_piece_name = "king"

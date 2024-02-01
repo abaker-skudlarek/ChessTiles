@@ -7,3 +7,4 @@
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_v152s")
 value = 20
+piece_name = "player_king"
