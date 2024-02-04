@@ -20,3 +20,4 @@ res://Scenes/Pieces/Player/player_queen.tscn
 res://Scenes/Pieces/Player/player_rook.tscn
 res://Scenes/temp.tscn
 res://Scripts/temp.gd
+res://Scripts/Managers/signal_bus.gd

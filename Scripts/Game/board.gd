@@ -33,14 +33,20 @@ func _enter_tree() -> void:
 	SignalBus.connect("slide_move_right", _on_slide_move_right)
 	SignalBus.connect("slide_move_up", _on_slide_move_up)
 	SignalBus.connect("slide_move_down", _on_slide_move_down)
+	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
 
 # ------------------------------------------------------------------------------------------------ #
 
-## Moves all pieces on the board in the direction that is defined in direction_to_move
+## Processes a slide move. Attempts to move all pieces on the board in the direction that is defined 
+## 	in direction_to_move. If the piece can't move, it doesn't. 
 ## 	direction_to_move is a Vector2 which should contain a 1 or -1 in the direction that we want to move 
 ## 	For example: If we want to move all pieces right, direction_to_move = Vector2(1, 0)
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
-func _slide_move(direction_to_move: Vector2) -> void:
+func _process_slide_move(direction_to_move: Vector2) -> void:
+	
+	print("---------------------------")
+	
+	var slide_moves_performed = 0
 	
 	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
 	
@@ -53,7 +59,7 @@ func _slide_move(direction_to_move: Vector2) -> void:
 					var new_grid_position = Vector2(current_grid_position.x + direction_to_move.x,
 													current_grid_position.y + direction_to_move.y)
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						_slide_move_piece(current_grid_position, new_grid_position)
+						slide_moves_performed += _slide_move_piece(current_grid_position, new_grid_position)
 	elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
 		for i in _board.size():
 			for j in _board[i].size():
@@ -62,7 +68,7 @@ func _slide_move(direction_to_move: Vector2) -> void:
 					var new_grid_position = Vector2(current_grid_position.x + direction_to_move.x,
 													current_grid_position.y + direction_to_move.y)
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						_slide_move_piece(current_grid_position, new_grid_position)
+						slide_moves_performed += _slide_move_piece(current_grid_position, new_grid_position)
 						
 	elif direction_to_move == Vector2.DOWN:
 		for i in _board.size():
@@ -73,14 +79,20 @@ func _slide_move(direction_to_move: Vector2) -> void:
 													current_grid_position.y + direction_to_move.y)
 					
 					if (new_grid_position.x < GRID_WIDTH and new_grid_position.x >= 0 and new_grid_position.y < GRID_HEIGHT and new_grid_position.y >= 0):
-						_slide_move_piece(current_grid_position, new_grid_position)
+						slide_moves_performed += _slide_move_piece(current_grid_position, new_grid_position)
+
+	# If we performed at least 1 slide move, emit the signal
+	if slide_moves_performed > 0:
+		SignalBus.emit_signal("slide_move_finished")
 
 	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
 ## Moves a piece using a slide move from the current_piece_grid_location to the new_piece_grid_location.
-func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> void:
+## Returns 1 if the slide move was performed, 0 if not. Not using bools because the calling code wants
+## to know how many slide moves are performed
+func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> int:
 	# If the new grid location to move to is occupied, either merge the pieces or don't perform the movement
 	if _is_square_occupied(new_piece_grid_location):
 		
@@ -94,15 +106,21 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 			# If the pieces that we are merging have a next piece name of "NONE", don't merge, because
 			# there aren't any pieces after this one. This usually means that we have two kings merging
 			if piece_at_new_grid_location.next_piece_name == NONE:
-				return
+				return 0
 			
 			GameManager.change_state(GameManager.GameState.MERGING)
 			
+			# TODO: This doesn't work because the objects are freed before the tween startss so it doesn't start
+			# 		May be able to connect to the tween finished signal and free the objects then?
+			# 		I'd like to have some kind of animation when pieces are merging
+			#var move_tween := create_tween()
+			#move_tween.tween_property(piece_at_current_grid_location, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_EXPO)
+			
 			# Remove both pieces from _board and _pieces_on_board
-			_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
 			_board[new_piece_grid_location.x][new_piece_grid_location.y] = null	
-			_pieces_on_board.erase(piece_at_current_grid_location)  # TODO: Not sure if erase() is what we want here or not
-			_pieces_on_board.erase(piece_at_new_grid_location)      # TODO: Not sure if erase() is what we want here or not
+			_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
+			_pieces_on_board.erase(piece_at_current_grid_location)  
+			_pieces_on_board.erase(piece_at_new_grid_location)     
 
 			_spawn_piece_at_grid_position(new_piece_grid_location, "player", piece_at_new_grid_location.next_piece_name)
 			
@@ -111,12 +129,15 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 			piece_at_new_grid_location.queue_free()
 			
 			GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
+			
+			return 1
 		
-		# If the new grid location is occupied and the pieces don't match, do nothing and return. No movement should happen
+		# If the new grid location is occupied but the pieces don't match, do nothing and return. No movement should happen
 		else:
-			return
+			return 0
 		
-	# If the new grid location to move to is not occupied, move the piece to the new locaation
+	# If the new grid location to move to is not occupied, move the piece to the new locaation 
+	# without worrying about merging.
 	else:
 		var piece = _board[current_piece_grid_location.x][current_piece_grid_location.y]
 		_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
@@ -128,15 +149,19 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		# 			 direction before the tween ends
 		# 		  2. The player can input a diagonal direction, causing the pieces to move diagonally, 
 		# 			 which we do not want
-		# 		  3. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
+		# 		  3. When merging, the tween doesn't seem to fully finish. We need some better animation when merging happens
+		# 		  4. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
 		var move_tween := create_tween()
 		#move_tween.connect("finished", _on_move_tween_finished) # TODO: This didn't seem to work like I wanted
 		move_tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_EXPO)
 		
+		return 1
+		
 # ------------------------------------------------------------------------------------------------ #
 
 ## Spawns pieces onto the board
-# TODO: Need to implement spawning of enemy pieces
+# TODO: 1. Need to implement spawning of enemy pieces
+# TODO: 2. In Threes, the pieces are only spawned at the edges of the board. We might want to do that as well
 func _spawn_pieces_at_random_positions(num_pieces_to_spawn: int):
 	
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
@@ -149,9 +174,6 @@ func _spawn_pieces_at_random_positions(num_pieces_to_spawn: int):
 	for i in num_pieces_to_spawn:
 		# Get a number between 0 and 100, this will be used to determine which piece to spawn
 		var spawn_chance = randi() % 101 
-		
-		# Determine which piece to spawn based on the spawn_chance. 75% to spawn pawn, 25% to spawn bishop
-		var piece_to_spawn = ResourceManager.player_pieces["pawn"] if spawn_chance <= 75 else ResourceManager.player_pieces["bishop"] 
 		
 		# Spawn the piece based on the random chance and set it's position to the empty_space we're on
 		var grid_position = _pixel_to_grid(Vector2(empty_spaces[i].x, empty_spaces[i].y))
@@ -244,6 +266,7 @@ func _is_square_occupied(grid_coordinates: Vector2) -> bool:
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
 	_generate_board_background()
+	# TODO: We may want to start the game with more pieces on the board. Could be random
 	_spawn_pieces_at_random_positions(2)
 	
 	# TODO: We are allowing the board scene to change the state of the game, using the GameManager Singleton.
@@ -257,29 +280,29 @@ func _on_state_changed_start_game() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_left() -> void:
-	_slide_move(Vector2.LEFT)
+	_process_slide_move(Vector2.LEFT)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_right() -> void:
-	_slide_move(Vector2.RIGHT)
+	_process_slide_move(Vector2.RIGHT)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_up() -> void:
-	_slide_move(Vector2.UP)
+	_process_slide_move(Vector2.UP)
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_down() -> void:
-	_slide_move(Vector2.DOWN)
+	_process_slide_move(Vector2.DOWN)
 
 # ------------------------------------------------------------------------------------------------ #
 
-### Change the game state to waiting for user input after the move tween is finished.
-### Doing this because we do not want the player to be able to move the pieces while a tween is in progress
-#func _on_move_tween_finished() -> void:
-	#GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
+func _on_slide_move_finished() -> void:
+	_spawn_pieces_at_random_positions(1)
+
+# ------------------------------------------------------------------------------------------------ #
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #

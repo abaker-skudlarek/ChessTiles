@@ -18,3 +18,8 @@ signal slide_move_left
 signal slide_move_right
 signal slide_move_up
 signal slide_move_down
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Board Signals -- #
+# ------------------------------------------------------------------------------------------------ #
+signal slide_move_finished
