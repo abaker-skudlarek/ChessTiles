@@ -13,6 +13,7 @@ func _input(event):
 	# TODO: It's possible to do two quick movements really fast, would like to make sure that isn't allowed
 	#		Need some sort of wait, or maybe when we have animations we can make it so you can't move
 	# 		until the animation is done
+	# TODO: Need to prevent diagonal moves
 	
 	if event.is_action_pressed("slide_move_left"):
 		SignalBus.emit_signal("slide_move_left")

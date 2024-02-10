@@ -1,9 +1,7 @@
 extends Node
 
-func _ready():
-	var a: Array = [1, 2, 3, 4]
-	
-	print("a: ", a)
-	a.erase(3)
-	print("a: ", a)
+func _input(event):
+	if event.is_action_pressed("mouse_click"):
+		if event.button_index == 1:
+			print(event.position)
 	

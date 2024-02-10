@@ -21,3 +21,4 @@ res://Scenes/Pieces/Player/player_rook.tscn
 res://Scenes/temp.tscn
 res://Scripts/temp.gd
 res://Scripts/Managers/signal_bus.gd
+res://Scripts/Managers/input_manager.gd

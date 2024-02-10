@@ -43,9 +43,6 @@ func _enter_tree() -> void:
 ## 	For example: If we want to move all pieces right, direction_to_move = Vector2(1, 0)
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
 func _process_slide_move(direction_to_move: Vector2) -> void:
-	
-	print("---------------------------")
-	
 	var slide_moves_performed = 0
 	
 	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
@@ -162,8 +159,8 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 ## Spawns pieces onto the board
 # TODO: 1. Need to implement spawning of enemy pieces
 # TODO: 2. In Threes, the pieces are only spawned at the edges of the board. We might want to do that as well
-func _spawn_pieces_at_random_positions(num_pieces_to_spawn: int):
-	
+# TODO: 3. We want to make sure pieces spawn at places that weren't just occupied or are going to be occupied by a move
+func _spawn_pieces_at_random_positions(num_pieces_to_spawn: int) -> void:
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
 	var empty_spaces: Array = _get_random_empty_board_spaces(num_pieces_to_spawn)
 	
@@ -187,8 +184,7 @@ func _spawn_pieces_at_random_positions(num_pieces_to_spawn: int):
 ## Spawn a piece at the grid position specified. 
 ## piece_family is "enemy" or "player"
 ## piece_name is "pawn", "bishop", "knight", "rook", "queen", "king"
-func _spawn_piece_at_grid_position(grid_position: Vector2, piece_family: String, piece_name: String):
-	
+func _spawn_piece_at_grid_position(grid_position: Vector2, piece_family: String, piece_name: String) -> void:
 	# Determine our piece to spawn based on the options passed in
 	var piece_to_spawn = ResourceManager.player_pieces[piece_name] if piece_family == "player" else ResourceManager.enemy_pieces[piece_name]
 		
