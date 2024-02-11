@@ -8,6 +8,13 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
+@onready var square_backgrounds: Dictionary = {
+	"light": preload("res://Sprites/Squares/square_brown_light.png"),
+	"dark": preload("res://Sprites/Squares/square_brown_dark.png")
+}
+
+@onready var move_square_overlay = preload("res://Sprites/Squares/move_square_overlay.png")
+
 @onready var player_pieces: Dictionary = {
 	"pawn": preload("res://Scenes/Pieces/Player/player_pawn.tscn"),
 	"bishop": preload("res://Scenes/Pieces/Player/player_bishop.tscn"),

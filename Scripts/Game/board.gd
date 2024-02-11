@@ -4,8 +4,6 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-const LIGHT_SQUARE_PATH: CompressedTexture2D = preload("res://Sprites/Squares/square_brown_dark.png")
-const DARK_SQUARE_PATH: CompressedTexture2D = preload("res://Sprites/Squares/square_brown_light.png")
 const GRID_X_START_POSITION: int = 104
 const GRID_Y_START_POSITION: int = 384
 const GRID_OFFSET: int = 128
@@ -194,7 +192,21 @@ func _spawn_piece_at_grid_position(grid_position: Vector2, piece_family: String,
 	piece.position = _grid_to_pixel(grid_position)
 	_pieces_on_board.append(piece)
 	add_child(piece)
+	
+# ------------------------------------------------------------------------------------------------ #
 
+# TODO: might be temporary, testing what the overlays look like
+func _spawn_square_overlays(overlay_locations: Array):
+	for i in overlay_locations.size():
+		print("overlay_location: ", overlay_locations[i])
+		
+		# TODO: also, probably need to add these overlays to a list so we can delete them when the player clicks on another piece or clicks on a space to move to
+		
+		var overlay_sprite = Sprite2D.new()
+		overlay_sprite.texture = ResourceManager.move_square_overlay
+		overlay_sprite.position = _grid_to_pixel(overlay_locations[i])
+		add_child(overlay_sprite)
+		
 # ------------------------------------------------------------------------------------------------ #
 
 ## Generate the board background by creating a grid of alternating sprites
@@ -202,9 +214,13 @@ func _generate_board_background() -> void:
 	for i in GRID_WIDTH:
 		for j in GRID_HEIGHT:	
 			var sprite = Sprite2D.new()
-			sprite.texture = DARK_SQUARE_PATH if (i + j) % 2 == 0 else LIGHT_SQUARE_PATH
+			sprite.texture = ResourceManager.square_backgrounds["dark"] if (i + j) % 2 == 0 else ResourceManager.square_backgrounds["light"]
 			sprite.position = _grid_to_pixel(Vector2(i, j))
 			add_child(sprite)
+
+	# TODO: just for testing, this needs to happen when a piece is clicked on for a chess move
+	var locations = [Vector2(0,2), Vector2(1, 2), Vector2(2,2), Vector2(3,2), Vector2(4,2)]
+	_spawn_square_overlays(locations)
 
 # ------------------------------------------------------------------------------------------------ #
 
