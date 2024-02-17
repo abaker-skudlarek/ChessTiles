@@ -4,7 +4,7 @@ extends Node
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
 
-func _input(event):
+func _input(event: InputEvent) -> void:
 	
 	# If we aren't waiting for user input, return and do nothing
 	if GameManager.get_current_game_state() != GameManager.GameState.WAITING_USER_INPUT:

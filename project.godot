@@ -21,6 +21,10 @@ ResourceManager="*res://Scenes/Managers/resource_manager.tscn"
 GameManager="*res://Scenes/Managers/game_manager.tscn"
 InputManager="*res://Scenes/Managers/input_manager.tscn"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+
 [display]
 
 window/size/viewport_width=720

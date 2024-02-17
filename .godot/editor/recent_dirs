@@ -1,5 +1,6 @@
-res://Scenes/UI
-res://Scripts/UI
+res://Scripts/Game/Pieces
+res://Scripts/Game
+res://Sprites/Player
 res://Scenes/Managers
 res://Scripts/Managers
 res://Scripts

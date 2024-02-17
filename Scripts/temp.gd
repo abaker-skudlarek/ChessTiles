@@ -1,7 +1,8 @@
 extends Node
 
-func _input(event):
-	if event.is_action_pressed("mouse_click"):
-		if event.button_index == 1:
-			print(event.position)
+func _init() -> void:
+	var a := Vector2(1, 1)
+	var b := Vector2(-1, 0)
 	
+	print(a + a)
+	print(a + b)
