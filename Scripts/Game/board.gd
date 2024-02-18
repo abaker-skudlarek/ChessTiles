@@ -154,7 +154,7 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		# 		  4. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
 		var move_tween := create_tween()
 		#move_tween.connect("finished", _on_move_tween_finished) # TODO: This didn't seem to work like I wanted
-		move_tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_EXPO)
+		move_tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_CUBIC)
 		
 		return 1
 		

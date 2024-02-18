@@ -1,11 +1,5 @@
 res://Scenes/temp.tscn
 res://Scripts/Game/board.gd
-res://Scenes/Managers/resource_manager.tscn
 res://Scenes/main.tscn
 res://Scenes/Pieces/Player/player_pawn.tscn
 res://Scenes/Pieces/Player/player_bishop.tscn
-res://Scripts/Game/Pieces/player_bishop.gd
-res://Scripts/Game/Pieces/player_queen.gd
-res://Scripts/Game/Pieces/player_rook.gd
-res://Scripts/Game/Pieces/player_king.gd
-res://Scripts/Game/Pieces/player_knight.gd

@@ -1,4 +1,6 @@
+LightOccluder2D
 PointLight2D
+CanvasModulate
 CollisionShape2D
 Area2D
 Button
