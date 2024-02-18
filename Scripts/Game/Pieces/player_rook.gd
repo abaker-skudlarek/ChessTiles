@@ -15,7 +15,6 @@ func _init() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func calculate_possible_moves(board: Array, current_grid_location: Vector2, board_width: int, board_height: int) -> Array:
-	
 	var possible_moves := []
 	
 	# Define the possible directions that the Rook can move
@@ -52,4 +51,6 @@ func calculate_possible_moves(board: Array, current_grid_location: Vector2, boar
 				break
 
 	return possible_moves
+	
+	
 	

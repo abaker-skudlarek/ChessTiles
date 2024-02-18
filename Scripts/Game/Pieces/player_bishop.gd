@@ -21,8 +21,8 @@ func calculate_possible_moves(board: Array, current_grid_location: Vector2, boar
 	var move_directions := [ 
 		Vector2(-1, -1),  # Up Left 
 		Vector2(+1, -1),  # Up Right
-		Vector2(-1, +1),  # Down Left
-		Vector2(+1, +1)     # Down Right
+		Vector2(+1, +1),  # Down Right
+		Vector2(-1, +1)   # Down Left
 	]    
 	
 	# Iterate through each possible direction the Bishop can move
