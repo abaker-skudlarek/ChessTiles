@@ -1,5 +1,4 @@
-res://Scenes/temp.tscn
 res://Scripts/Game/board.gd
-res://Scenes/main.tscn
-res://Scenes/Pieces/Player/player_pawn.tscn
-res://Scenes/Pieces/Player/player_bishop.tscn
+res://Scenes/Squares/square_base.tscn
+res://Scenes/Pieces/Player/player_piece_base.tscn
+res://Scripts/Game/Squares/square_base.gd
