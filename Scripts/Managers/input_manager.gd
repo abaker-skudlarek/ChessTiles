@@ -1,5 +1,8 @@
 extends Node
 
+# NOTE: This is mainly for more global controls. If you are looking for things like clicking a piece,
+# 		a square, etc, those can be found in their respective scripts.
+
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
@@ -26,3 +29,5 @@ func _input(event: InputEvent) -> void:
 		
 	if event.is_action_pressed("slide_move_down"):
 		SignalBus.emit_signal("slide_move_down")
+		
+	

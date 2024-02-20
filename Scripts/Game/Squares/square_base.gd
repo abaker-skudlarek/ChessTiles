@@ -5,15 +5,27 @@ extends Area2D
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-var sprite_texture: CompressedTexture2D
-var overlay_shown: bool = false
-var occupying_piece: Node = null
+var move_overlay_shown: bool
+var occupying_piece: Node
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
 
-func _init() -> void:
-	$SquareSprite.texture = sprite_texture
-	$MoveOverlaySprite.visible = overlay_shown
+func _ready() -> void:
+	disable_move_overlay()
+	occupying_piece = null
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Public Functions -- #
+# ------------------------------------------------------------------------------------------------ #
+
+func enable_move_overlay() -> void:
+	move_overlay_shown = true
+	$MoveOverlaySprite.visible = true
 	
+# ------------------------------------------------------------------------------------------------ #
+
+func disable_move_overlay() -> void:
+	move_overlay_shown = false
+	$MoveOverlaySprite.visible = false

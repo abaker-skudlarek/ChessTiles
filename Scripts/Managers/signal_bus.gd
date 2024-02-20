@@ -28,3 +28,9 @@ signal slide_move_finished
 # -- Piece Signals -- #
 # ------------------------------------------------------------------------------------------------ #
 signal piece_clicked(piece_pixel_position: Vector2, piece_name: String)
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Square Signals -- #
+# ------------------------------------------------------------------------------------------------ #
+signal light_square_clicked(square_pixel_position: Vector2)
+signal dark_square_clicked(square_pixel_position: Vector2)

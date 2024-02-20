@@ -4,3 +4,30 @@
 
 [node name="Node" type="Node"]
 script = ExtResource("1_jggny")
+
+[node name="Spawn" type="Button" parent="."]
+offset_left = 111.0
+offset_top = 419.0
+offset_right = 595.0
+offset_bottom = 531.0
+text = "Spawn"
+
+[node name="Enable" type="Button" parent="."]
+offset_left = 113.0
+offset_top = 584.0
+offset_right = 597.0
+offset_bottom = 696.0
+text = "Enable"
+
+[node name="Disable" type="Button" parent="."]
+offset_left = 111.0
+offset_top = 738.0
+offset_right = 595.0
+offset_bottom = 850.0
+text = "Disable"
+
+[connection signal="pressed" from="Spawn" to="." method="_on_spawn_pressed"]
+[connection signal="pressed" from="Enable" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Enable" to="." method="_on_enable_pressed"]
+[connection signal="pressed" from="Disable" to="." method="_on_disable_pressed"]
+[connection signal="pressed" from="Disable" to="." method="_on_button_pressed"]
