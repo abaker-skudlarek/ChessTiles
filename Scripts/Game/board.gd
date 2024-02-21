@@ -11,9 +11,11 @@ const GRID_WIDTH: int = 5
 const GRID_HEIGHT: int = 5
 const NONE: String = "NONE"
 
-var _board: Array # Two dimensional array that defines the board and holds references to piece locations
-var _pieces_on_board: Array = [] # Array containing a list of all the pieces that are currently on the board. This includes Player and Enemy pieces
+var _board: Array 				     # Two dimensional array that defines the board and holds references to piece locations
+var _pieces_on_board: Array = []     # Array containing a list of all the pieces that are currently on the board. This includes Player and Enemy pieces
 var _shown_move_overlays: Array = [] # Array containing a list of all the move overlays that are currently on the board.
+var _last_clicked_piece: Node 		 # The last piece that was clicked, needed to know which piece to chess move
+									 # TODO: There might be a better way to do this, but not going to worry about it yet
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -34,6 +36,7 @@ func _enter_tree() -> void:
 	SignalBus.connect("slide_move_down", _on_slide_move_down)
 	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
 	SignalBus.connect("piece_clicked", _on_piece_clicked)
+	SignalBus.connect("move_overlay_clicked", _on_move_overlay_clicked)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -137,8 +140,7 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		else:
 			return 0
 		
-	# If the new grid location to move to is not occupied, move the piece to the new locaation 
-	# without worrying about merging.
+	# If the new grid location to move to is not occupied, move the piece to the new location without worrying about merging.
 	else:
 		var piece: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
 		_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
@@ -158,6 +160,20 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		
 		return 1
 		
+# ------------------------------------------------------------------------------------------------ #
+
+## Move a single piece from one square to another, according to it's normal chess movement.
+func _chess_move_piece(desired_pixel_location: Vector2) -> void:
+	# Update the piece's location in the _board array before moving it
+	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
+	_board[last_clicked_piece_grid_location.x][last_clicked_piece_grid_location.y] = null
+	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
+	_board[desired_grid_location.x][desired_grid_location.y] = _last_clicked_piece
+	
+	# Tween the piece to the new location
+	var move_tween := create_tween()
+	move_tween.tween_property(_last_clicked_piece, "position", desired_pixel_location, .3).set_trans(Tween.TRANS_CUBIC)
+	
 # ------------------------------------------------------------------------------------------------ #
 
 ## Spawns pieces onto the board
@@ -189,7 +205,6 @@ func _spawn_pieces_at_random_locations(num_pieces_to_spawn: int) -> void:
 ## piece_family is "enemy" or "player"
 ## piece_name is "pawn", "bishop", "knight", "rook", "queen", "king"
 func _spawn_piece_at_grid_location(grid_location: Vector2, piece_family: String, piece_name: String) -> void:
-	
 	# Determine our piece to spawn based on the options passed in
 	var piece_to_spawn: Resource = ResourceManager.player_pieces[piece_name] if piece_family == "player" else ResourceManager.enemy_pieces[piece_name]
 		
@@ -205,29 +220,18 @@ func _spawn_piece_at_grid_location(grid_location: Vector2, piece_family: String,
 ## Spawn move overlays on the grid locations passed in
 func _spawn_move_overlays(desired_overlay_locations: Array) -> void:
 	for i in desired_overlay_locations.size():
-		print("overlay_location: ", desired_overlay_locations[i])
-		
-		# TODO: also, probably need to add these overlays to a list so we can delete them when the player clicks on another piece or clicks on a space to move to
-		
-		var overlay_sprite := Sprite2D.new()
-		overlay_sprite.texture = ResourceManager.move_square_overlay
-		overlay_sprite.position = _grid_to_pixel(desired_overlay_locations[i])
-		_shown_move_overlays.append(overlay_sprite)
-		add_child(overlay_sprite)
+		var overlay: Variant = ResourceManager.move_overlay.instantiate()
+		overlay.position = _grid_to_pixel(desired_overlay_locations[i])
+		_shown_move_overlays.append(overlay)
+		add_child(overlay)
 
 # ------------------------------------------------------------------------------------------------ #
 
 ## Removes all shown move overlays from the board and resets the array that keeps track of them
 func _remove_move_overlays() -> void:
-	print("_shown_move_overlays: ", _shown_move_overlays)
-	
 	for i in _shown_move_overlays.size():
-		print("freeing")
 		_shown_move_overlays[i].queue_free()
-	
-	print("resetting")
 	_shown_move_overlays = []
-	print("_shown_move_overlays: ", _shown_move_overlays)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -292,6 +296,13 @@ func _is_square_occupied(grid_location: Vector2) -> bool:
 
 # ------------------------------------------------------------------------------------------------ #
 
+## Simply sets the last clicked piece to the piece located at the pixel location passed in
+func _set_last_clicked_piece(piece_pixel_location: Vector2) -> void:
+	var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
+	_last_clicked_piece = _board[piece_grid_location.x][piece_grid_location.y]
+
+# ------------------------------------------------------------------------------------------------ #
+
 ## Perform functions that need to occur at the start of the game
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
@@ -334,10 +345,10 @@ func _on_slide_move_finished() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> void:
+	_set_last_clicked_piece(piece_pixel_location)	
 	_remove_move_overlays()
 	
-	print("piece clicked! location: ", piece_pixel_location, " name: ", piece_name)
-	
+	# Spawn the move overlays based on the location of the piece we clicked
 	var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
 	var piece_at_grid_location: Node = _board[piece_grid_location.x][piece_grid_location.y]
 	if piece_at_grid_location.has_method("calculate_possible_moves"):
@@ -346,6 +357,12 @@ func _on_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> voi
 		_spawn_move_overlays(possible_moves)
 	else:
 		printerr(piece_at_grid_location.piece_name, " does not have method 'calculate_possible_moves'!")
+
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_move_overlay_clicked(overlay_pixel_location: Vector2) -> void:
+	_remove_move_overlays()
+	_chess_move_piece(overlay_pixel_location)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #
