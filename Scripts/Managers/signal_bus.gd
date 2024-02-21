@@ -28,3 +28,8 @@ signal slide_move_finished
 # -- Piece Signals -- #
 # ------------------------------------------------------------------------------------------------ #
 signal piece_clicked(piece_pixel_position: Vector2, piece_name: String)
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Nove Overlay Signals -- #
+# ------------------------------------------------------------------------------------------------ #
+signal move_overlay_clicked(overlay_pixel_position: Vector2)

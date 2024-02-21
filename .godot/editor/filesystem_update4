@@ -2,3 +2,14 @@ res://Scenes/temp.tscn
 res://Scenes/main.tscn
 res://Scenes/Pieces/Player/player_pawn.tscn
 res://Scenes/Pieces/Player/player_bishop.tscn
+res://Scripts/Game/move_overlay.gd
+res://Scripts/Managers/signal_bus.gd
+res://Scenes/move_overlay.tscn
+res://Scripts/Game/board.gd
+res://Scripts/Managers/resource_manager.gd
+res://Scripts/Game/Pieces/player_pawn.gd
+res://Scripts/Game/Pieces/player_bishop.gd
+res://Scripts/Game/Pieces/player_king.gd
+res://Scripts/Game/Pieces/player_knight.gd
+res://Scripts/Game/Pieces/player_queen.gd
+res://Scripts/Game/Pieces/player_rook.gd

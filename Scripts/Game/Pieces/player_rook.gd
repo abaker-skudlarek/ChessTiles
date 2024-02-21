@@ -5,7 +5,6 @@ extends PlayerPieceBase
 # ------------------------------------------------------------------------------------------------ #
 
 func _init() -> void:
-	print("rook init called")
 	value = 5
 	piece_name = "rook"
 	next_piece_name = "queen"
