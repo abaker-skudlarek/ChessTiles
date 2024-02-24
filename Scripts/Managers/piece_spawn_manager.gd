@@ -12,6 +12,8 @@ extends Node
 
 const NUM_STARTING_PIECES: int = 2  # This is the amount of pieces on the board when the game starts
 
+# TODO: Might want to have some sort of dictionary for the base spawn rate of pieces?
+
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
