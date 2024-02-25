@@ -5,6 +5,9 @@
 
 [node name="EnemyBishop" instance=ExtResource("1_ht22j")]
 scale = Vector2(0.75, 0.75)
-texture = ExtResource("2_h2oo0")
 value = 3
 piece_name = "enemy_bishop"
+
+[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(1.02632, 0.97807)
+texture = ExtResource("2_h2oo0")

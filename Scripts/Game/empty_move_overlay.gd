@@ -6,4 +6,4 @@ extends Area2D
 
 func _input_event(_viewport: Viewport, event:InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-		SignalBus.emit_signal("move_overlay_clicked", position)
+		SignalBus.emit_signal("empty_move_overlay_clicked", position)

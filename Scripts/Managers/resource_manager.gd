@@ -8,7 +8,10 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-@onready var move_overlay := preload("res://Scenes/move_overlay.tscn")
+@onready var move_overlays: Dictionary = {
+	"empty": preload("res://Scenes/empty_move_overlay.tscn"),
+	"enemy": preload("res://Scenes/enemy_move_overlay.tscn")
+}
 
 @onready var square_backgrounds: Dictionary = {
 	"light": preload("res://Sprites/Squares/square_brown_light.png"),

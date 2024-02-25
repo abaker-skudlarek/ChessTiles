@@ -29,14 +29,16 @@ var _last_clicked_piece: Node 		 # The last piece that was clicked, needed to kn
 # 		because then GameManager will emit the signal whenever that is hit, instead of in it's _ready()
 # 		function
 func _enter_tree() -> void:
+
 	SignalBus.connect("state_changed_start_game", _on_state_changed_start_game)
 	SignalBus.connect("slide_move_left", _on_slide_move_left)
 	SignalBus.connect("slide_move_right", _on_slide_move_right)
 	SignalBus.connect("slide_move_up", _on_slide_move_up)
 	SignalBus.connect("slide_move_down", _on_slide_move_down)
 	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
-	SignalBus.connect("piece_clicked", _on_piece_clicked)
-	SignalBus.connect("move_overlay_clicked", _on_move_overlay_clicked)
+	SignalBus.connect("player_piece_clicked", _on_player_piece_clicked)
+	SignalBus.connect("empty_move_overlay_clicked", _on_empty_move_overlay_clicked)
+	SignalBus.connect("enemy_move_overlay_clicked", _on_enemy_move_overlay_clicked)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -46,6 +48,7 @@ func _enter_tree() -> void:
 ## 	For example: If we want to move all pieces right, direction_to_move = Vector2(1, 0)
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
 func _process_slide_move(direction_to_move: Vector2) -> void:
+
 	var slide_moves_performed: int = 0
 	
 	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
@@ -94,6 +97,7 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 ## Returns 1 if the slide move was performed, 0 if not. Not using bools because the calling code wants
 ## to know how many slide moves are performed
 func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> int:
+
 	# If the new grid location to move to is occupied, either merge the pieces or don't perform the movement
 	if _is_square_occupied(new_piece_grid_location):
 		
@@ -160,8 +164,9 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		
 # ------------------------------------------------------------------------------------------------ #
 
-## Move a single piece from one square to another, according to it's normal chess movement.
-func _chess_move_piece(desired_pixel_location: Vector2) -> void:
+## Move a single piece from one square to an empty square, according to it's normal chess movement.
+func _chess_move_piece_to_empty_square(desired_pixel_location: Vector2) -> void:
+
 	# Update the piece's location in the _board array before moving it
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
 	_board[last_clicked_piece_grid_location.x][last_clicked_piece_grid_location.y] = null
@@ -172,15 +177,41 @@ func _chess_move_piece(desired_pixel_location: Vector2) -> void:
 	var move_tween := create_tween()
 	move_tween.tween_property(_last_clicked_piece, "position", desired_pixel_location, .3).set_trans(Tween.TRANS_CUBIC)
 	
-	SignalBus.emit_signal("chess_move_finished")
+	SignalBus.emit_signal("chess_move_to_empty_square_finished")
 	
 # ------------------------------------------------------------------------------------------------ #
+
+## Move a single piece from one square to another square that is occupied by an enemy piece
+func _chess_move_piece_to_enemy_square(desired_pixel_location: Vector2) -> void:
+
+	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
+	var piece_at_desired_grid_location: Node = _board[desired_grid_location.x][desired_grid_location.y]
+
+	# Delete the enemy piece at the location we are moving to
+	_pieces_on_board.erase(piece_at_desired_grid_location)
+	piece_at_desired_grid_location.queue_free()
+
+	# Update the moving piece's location in the _board array before moving it
+	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
+	_board[last_clicked_piece_grid_location.x][last_clicked_piece_grid_location.y] = null
+	_board[desired_grid_location.x][desired_grid_location.y] = _last_clicked_piece
+	
+	# Tween the piece to the new location
+	var move_tween := create_tween()
+	move_tween.tween_property(_last_clicked_piece, "position", desired_pixel_location, .3).set_trans(Tween.TRANS_CUBIC)
+
+	# TODO: May want to add the enemy pieces value to this signal, if we care about that for scoring	
+	SignalBus.emit_signal("chess_move_to_empty_square_finished")
+	
+# ------------------------------------------------------------------------------------------------ #
+
 
 ## Spawns pieces onto the board
 # TODO: 1. Need to implement spawning of enemy pieces
 # TODO: 2. In Threes, the pieces are only spawned at the edges of the board. We might want to do that as well
 # TODO: 3. We want to make sure pieces spawn at places that weren't just occupied or are going to be occupied by a move
 func _spawn_pieces_at_random_locations(pieces_to_spawn: Array) -> void:
+
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
 	var empty_spaces: Array = _get_random_empty_board_spaces(pieces_to_spawn.size())
 	
@@ -193,6 +224,7 @@ func _spawn_pieces_at_random_locations(pieces_to_spawn: Array) -> void:
 
 ## Spawn a piece at the grid location specified. 
 func _spawn_piece_at_grid_location(grid_location: Vector2, piece_to_spawn: Resource) -> void:
+
 	# Instantiate and spawn our piece at the given location
 	var piece: Variant = piece_to_spawn.instantiate()
 	_board[grid_location.x][grid_location.y] = piece
@@ -203,17 +235,27 @@ func _spawn_piece_at_grid_location(grid_location: Vector2, piece_to_spawn: Resou
 # ------------------------------------------------------------------------------------------------ #
 
 ## Spawn move overlays on the grid locations passed in
-func _spawn_move_overlays(desired_overlay_locations: Array) -> void:
-	for i in desired_overlay_locations.size():
-		var overlay: Variant = ResourceManager.move_overlay.instantiate()
-		overlay.position = _grid_to_pixel(desired_overlay_locations[i])
+func _spawn_move_overlays(desired_overlay_locations: Dictionary) -> void:
+
+	# Spawn all of the overlays for the empty spaces
+	for i: int in desired_overlay_locations["empty_spaces"].size():
+		var overlay: Variant = ResourceManager.move_overlays["empty"].instantiate()
+		overlay.position = _grid_to_pixel(desired_overlay_locations["empty_spaces"][i])
 		_shown_move_overlays.append(overlay)
 		add_child(overlay)
-
+	
+	# Spawn all of the overlays for the enemy spaces
+	for i: int in desired_overlay_locations["enemy_spaces"].size():
+		var overlay: Variant = ResourceManager.move_overlays["enemy"].instantiate()
+		overlay.position = _grid_to_pixel(desired_overlay_locations["enemy_spaces"][i])
+		_shown_move_overlays.append(overlay)
+		add_child(overlay)
+	
 # ------------------------------------------------------------------------------------------------ #
 
 ## Removes all shown move overlays from the board and resets the array that keeps track of them
 func _remove_move_overlays() -> void:
+
 	for i in _shown_move_overlays.size():
 		_shown_move_overlays[i].queue_free()
 	_shown_move_overlays = []
@@ -222,6 +264,7 @@ func _remove_move_overlays() -> void:
 
 ## Generate the board background by creating a grid of alternating sprites
 func _generate_board_background() -> void:
+
 	for i in GRID_WIDTH:
 		for j in GRID_HEIGHT:	
 			var sprite := Sprite2D.new()
@@ -233,6 +276,7 @@ func _generate_board_background() -> void:
 
 ## Returns num_spaces amount of random empty spaces on the board
 func _get_random_empty_board_spaces(num_spaces: int) -> Array:	
+
 	# Find all of the empty spaces on the board
 	var empty_spaces := []  # Every element in this array will be a Vector2 pertaining to the pixel location of the space
 	for i in GRID_WIDTH:
@@ -282,6 +326,7 @@ func _is_square_occupied(grid_location: Vector2) -> bool:
 # ------------------------------------------------------------------------------------------------ #
 
 ## Simply sets the last clicked piece to the piece located at the pixel location passed in
+## This is needed so that we know which piece to move when performing a chess move
 func _set_last_clicked_piece(piece_pixel_location: Vector2) -> void:
 	var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
 	_last_clicked_piece = _board[piece_grid_location.x][piece_grid_location.y]
@@ -333,7 +378,7 @@ func _on_slide_move_finished() -> void:
 
 # ------------------------------------------------------------------------------------------------ #
 
-func _on_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> void:
+func _on_player_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> void:
 	_set_last_clicked_piece(piece_pixel_location)	
 	_remove_move_overlays()
 	
@@ -341,7 +386,7 @@ func _on_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> voi
 	var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
 	var piece_at_grid_location: Node = _board[piece_grid_location.x][piece_grid_location.y]
 	if piece_at_grid_location.has_method("calculate_possible_moves"):
-		var possible_moves: Array = piece_at_grid_location.calculate_possible_moves(_board, piece_grid_location, GRID_WIDTH, GRID_HEIGHT)
+		var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, piece_grid_location, GRID_WIDTH, GRID_HEIGHT)
 		print("possible_moves: ", possible_moves)
 		_spawn_move_overlays(possible_moves)
 	else:
@@ -349,9 +394,16 @@ func _on_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> voi
 
 # ------------------------------------------------------------------------------------------------ #
 
-func _on_move_overlay_clicked(overlay_pixel_location: Vector2) -> void:
+func _on_empty_move_overlay_clicked(overlay_pixel_location: Vector2) -> void:
 	_remove_move_overlays()
-	_chess_move_piece(overlay_pixel_location)
+	_chess_move_piece_to_empty_square(overlay_pixel_location)
+
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_enemy_move_overlay_clicked(overlay_pixel_location: Vector2) -> void:
+	_remove_move_overlays()
+	_chess_move_piece_to_enemy_square(overlay_pixel_location)
+
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #

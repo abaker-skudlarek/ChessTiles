@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmwq0g3ryqlxw"
-path="res://.godot/imported/move_square_overlay.png-48739c5e9e2c4e01fc45d5ba34a4bc46.ctex"
+uid="uid://csqbyvcuu6sp2"
+path="res://.godot/imported/red_move_square_overlay.png-bf95ee4fbc59a386499944d27fa0fe22.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Squares/move_square_overlay.png"
-dest_files=["res://.godot/imported/move_square_overlay.png-48739c5e9e2c4e01fc45d5ba34a4bc46.ctex"]
+source_file="res://Sprites/Squares/red_move_square_overlay.png"
+dest_files=["res://.godot/imported/red_move_square_overlay.png-bf95ee4fbc59a386499944d27fa0fe22.ctex"]
 
 [params]
 
