@@ -1,1 +1,11 @@
 res://Scenes/move_overlay.tscn
+res://Scripts/Game/board.gd
+res://Scripts/Managers/game_manager.gd
+res://Scripts/Managers/piece_spawn_manager.gd
+res://Scenes/temp.tscn
+res://Scenes/main.tscn
+res://Scenes/Pieces/Player/player_pawn.tscn
+res://Scenes/Pieces/Player/player_bishop.tscn
+res://Scripts/Game/Pieces/enemy_piece_base.gd
+res://Scenes/Pieces/Enemy/enemy_bishop.tscn
+res://Scenes/Pieces/Enemy/enemy_piece_base.tscn

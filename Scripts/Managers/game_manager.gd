@@ -22,11 +22,10 @@ enum GameState {
 	LOSE
 }
 
-var _current_state: GameState
-
-var slide_move_counter: int = 0  # Holds the amount of slide moves that have been performed during the game
-var chess_move_counter: int = 0  # Holds the amount of chess moves that have been performed during the game
-var chess_moves_left: int = 0    # Holds the amount of chess moves that the player can use
+var _current_state: GameState	     # Keeps track of the current state the game is in
+var _slide_move_counter: int = 0     # Holds the amount of slide moves that have been performed during the game
+var _chess_move_counter: int = 0     # Holds the amount of chess moves that have been performed during the game
+var _chess_moves_remaining: int = 0  # Holds the amount of chess moves that the player can still use
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -43,13 +42,13 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_finished() -> void:
-	slide_move_counter += 1
+	_slide_move_counter += 1
 	
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_chess_move_finished() -> void:
-	chess_move_counter += 1
-	chess_moves_left -= 1
+	_chess_move_counter += 1
+	_chess_moves_remaining -= 1
 	
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #
@@ -84,4 +83,19 @@ func change_state(new_state: GameState) -> void:
 func get_current_game_state() -> GameState:
 	return _current_state
 
+# ------------------------------------------------------------------------------------------------ #
+
+func get_slide_move_count() -> int:
+	return _slide_move_counter
+
+# ------------------------------------------------------------------------------------------------ #
+
+func get_chess_move_count() -> int:
+	return _chess_move_counter
+
+# ------------------------------------------------------------------------------------------------ #
+
+func get_chess_moves_remaining() -> int:
+	return _chess_move_counter
+	
 # ------------------------------------------------------------------------------------------------ #
