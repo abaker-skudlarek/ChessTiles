@@ -7,6 +7,7 @@ extends Area2D
 @export var value: int
 @export var piece_name: String
 @export var next_piece_name: String = ""
+@export var piece_family: String = GameManager.ENEMY_FAMILY
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #

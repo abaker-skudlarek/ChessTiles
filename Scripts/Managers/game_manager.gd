@@ -22,6 +22,18 @@ enum GameState {
 	LOSE
 }
 
+# NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
+enum BoardLocationStates {
+	OCCUPIED_PLAYER,  # Board location is occupied by a player piece
+	OCCUPIED_ENEMY,   # Board location is occupied by an enemy piece
+	NOT_OCCUPIED,     # Board location is not occupied
+	ERROR			  # Default state
+}
+
+# NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
+const PLAYER_FAMILY: String = "player"
+const ENEMY_FAMILY: String = "enemy"
+
 var _current_state: GameState	     # Keeps track of the current state the game is in
 var _slide_move_counter: int = 0     # Holds the amount of slide moves that have been performed during the game
 var _chess_move_counter: int = 0     # Holds the amount of chess moves that have been performed during the game

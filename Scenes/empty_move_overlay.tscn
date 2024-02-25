@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dxtf2xogfmevh"]
+[gd_scene load_steps=4 format=3 uid="uid://b7e1nl1ppbvrw"]
 
 [ext_resource type="Script" path="res://Scripts/Game/empty_move_overlay.gd" id="1_o3f4l"]
-[ext_resource type="Texture2D" uid="uid://cmwq0g3ryqlxw" path="res://Sprites/Squares/empty_move_square_overlay.png" id="2_41vr5"]
+[ext_resource type="Texture2D" path="res://Sprites/Squares/empty_move_square_overlay.png" id="2_41vr5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ltqoe"]
 size = Vector2(128, 128)

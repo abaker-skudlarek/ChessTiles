@@ -5,19 +5,10 @@ extends Area2D
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-enum BoardLocationStates {
-	OCCUPIED_PLAYER,  # Board location is occupied by a player piece
-	OCCUPIED_ENEMY,   # Board location is occupied by an enemy piece
-	NOT_OCCUPIED,     # Board location is not occupied
-	ERROR			  # Default state
-}
-
-const PLAYER = "player"
-const ENEMY = "enemy"
-
 var value: int
 var piece_name: String
 var next_piece_name: String  
+var piece_family: String = GameManager.PLAYER_FAMILY
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -32,16 +23,16 @@ func _input_event(_viewport: Viewport, event:InputEvent, _shape_idx: int) -> voi
 
 ## Helper to check if a board square location is occupied, and if so, by who. All Children of this 
 ## class will want to be able to use this
-func _is_location_occupied(grid_location: Vector2, board: Array) -> BoardLocationStates:
+func _is_location_occupied(grid_location: Vector2, board: Array) -> GameManager.BoardLocationStates:
 	var board_location_contents: Node = board[grid_location.x][grid_location.y]
-	var state: BoardLocationStates = BoardLocationStates.ERROR  # Error state should not be returned, it should be set to one of the other ones. If not, bug.
+	var state: GameManager.BoardLocationStates = GameManager.BoardLocationStates.ERROR  # Error state should not be returned, it should be set to one of the other ones. If not, bug.
 	
 	if board_location_contents == null:
-		state = BoardLocationStates.NOT_OCCUPIED
-	elif PLAYER in board_location_contents.piece_name:
-		state = BoardLocationStates.OCCUPIED_PLAYER
-	elif ENEMY in board_location_contents.piece_name:
-		state = BoardLocationStates.OCCUPIED_ENEMY
+		state = GameManager.BoardLocationStates.NOT_OCCUPIED
+	elif piece_family == GameManager.PLAYER_FAMILY:
+		state = GameManager.BoardLocationStates.OCCUPIED_PLAYER
+	elif piece_family == GameManager.ENEMY_FAMILY:
+		state = GameManager.BoardLocationStates.OCCUPIED_ENEMY
 		
 	return state
 	
