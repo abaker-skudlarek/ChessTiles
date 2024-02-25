@@ -6,7 +6,7 @@ extends PlayerPieceBase
 
 func _init() -> void:
 	value = 20
-	piece_name = "king"
+	piece_name = "player_king"
 	next_piece_name = ""
 
 # ------------------------------------------------------------------------------------------------ #

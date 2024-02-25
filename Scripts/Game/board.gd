@@ -72,7 +72,6 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 													 current_grid_location.y + direction_to_move.y)
 					if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
 						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
-						
 	elif direction_to_move == Vector2.DOWN:
 		for i in _board.size():
 			for j in range(_board[i].size() - 1, -1, -1):
@@ -80,7 +79,6 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 				if _is_square_occupied(current_grid_location):
 					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
 													 current_grid_location.y + direction_to_move.y)
-					
 					if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
 						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
 
@@ -104,8 +102,6 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		
 		# If the piece at the current grid location and the new grid location are the same, merge them
 		if piece_at_current_grid_location.piece_name == piece_at_new_grid_location.piece_name:
-			print("piece_at_current_grid_location.next_piece_name: ", piece_at_current_grid_location.next_piece_name)
-			print("piece_at_new_grid_location.next_piece_name: ", piece_at_new_grid_location.next_piece_name)
 			
 			# If the pieces that we are merging don't have a next piece name, don't merge, because
 			# there aren't any pieces after this one. This usually means that we have two kings merging
@@ -126,7 +122,9 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 			_pieces_on_board.erase(piece_at_current_grid_location)  
 			_pieces_on_board.erase(piece_at_new_grid_location)     
 
-			_spawn_piece_at_grid_location(new_piece_grid_location, "player", piece_at_new_grid_location.next_piece_name)
+			# Get the next piece that we want to spawn and spawn it at the new grid location
+			var piece_to_spawn: Resource = PieceSpawnManager.get_piece_by_name(piece_at_new_grid_location.next_piece_name)
+			_spawn_piece_at_grid_location(new_piece_grid_location, piece_to_spawn)
 			
 			# Delete the pieces that are merging
 			piece_at_current_grid_location.queue_free()
@@ -174,40 +172,27 @@ func _chess_move_piece(desired_pixel_location: Vector2) -> void:
 	var move_tween := create_tween()
 	move_tween.tween_property(_last_clicked_piece, "position", desired_pixel_location, .3).set_trans(Tween.TRANS_CUBIC)
 	
+	SignalBus.emit_signal("chess_move_finished")
+	
 # ------------------------------------------------------------------------------------------------ #
 
 ## Spawns pieces onto the board
 # TODO: 1. Need to implement spawning of enemy pieces
 # TODO: 2. In Threes, the pieces are only spawned at the edges of the board. We might want to do that as well
 # TODO: 3. We want to make sure pieces spawn at places that weren't just occupied or are going to be occupied by a move
-func _spawn_pieces_at_random_locations(num_pieces_to_spawn: int) -> void:
+func _spawn_pieces_at_random_locations(pieces_to_spawn: Array) -> void:
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
-	var empty_spaces: Array = _get_random_empty_board_spaces(num_pieces_to_spawn)
+	var empty_spaces: Array = _get_random_empty_board_spaces(pieces_to_spawn.size())
 	
-	# TODO: eventually, we need a more sophisticated way to determine what pieces to spawn. something like a 
-	# 		class that will evaluate what state the board is in and spawn pieces based on that.
-	# 		Can be based on how well the player is doing, how many other pieces there are already, etc
-	
-	for i in num_pieces_to_spawn:
-		# Get a number between 0 and 100, this will be used to determine which piece to spawn
-		var spawn_chance: int = randi() % 101 
-		
-		# Spawn the piece based on the random chance and set it's location to the empty_space we're on
+	# For each piece to spawn, get the next empty grid location and spawn it at that location
+	for i in pieces_to_spawn.size():
 		var grid_location: Vector2 = _pixel_to_grid(Vector2(empty_spaces[i].x, empty_spaces[i].y))
-		if spawn_chance <= 75:
-			_spawn_piece_at_grid_location(grid_location, "player", "pawn")
-		else:
-			_spawn_piece_at_grid_location(grid_location, "player", "bishop")
+		_spawn_piece_at_grid_location(grid_location, pieces_to_spawn[i])
 	
 # ------------------------------------------------------------------------------------------------ #
 
 ## Spawn a piece at the grid location specified. 
-## piece_family is "enemy" or "player"
-## piece_name is "pawn", "bishop", "knight", "rook", "queen", "king"
-func _spawn_piece_at_grid_location(grid_location: Vector2, piece_family: String, piece_name: String) -> void:
-	# Determine our piece to spawn based on the options passed in
-	var piece_to_spawn: Resource = ResourceManager.player_pieces[piece_name] if piece_family == "player" else ResourceManager.enemy_pieces[piece_name]
-		
+func _spawn_piece_at_grid_location(grid_location: Vector2, piece_to_spawn: Resource) -> void:
 	# Instantiate and spawn our piece at the given location
 	var piece: Variant = piece_to_spawn.instantiate()
 	_board[grid_location.x][grid_location.y] = piece
@@ -307,7 +292,10 @@ func _set_last_clicked_piece(piece_pixel_location: Vector2) -> void:
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
 	_generate_board_background()
-	_spawn_pieces_at_random_locations(2)
+	
+	# Get and spawn our starting pieces
+	var starting_pieces_to_spawn: Array = PieceSpawnManager.get_starting_pieces()
+	_spawn_pieces_at_random_locations(starting_pieces_to_spawn)
 	
 	# TODO: We are allowing the board scene to change the state of the game, using the GameManager Singleton.
 	# 		I honestly don't know if this is good or not. This way, any script can change the state using GameManager,
@@ -340,7 +328,8 @@ func _on_slide_move_down() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_finished() -> void:
-	_spawn_pieces_at_random_locations(1)
+	var piece_to_spawn: Array = PieceSpawnManager.get_new_pieces(1)
+	_spawn_pieces_at_random_locations(piece_to_spawn)
 
 # ------------------------------------------------------------------------------------------------ #
 

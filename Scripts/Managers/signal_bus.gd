@@ -23,6 +23,7 @@ signal slide_move_down
 # -- Board Signals -- #
 # ------------------------------------------------------------------------------------------------ #
 signal slide_move_finished
+signal chess_move_finished
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Piece Signals -- #
@@ -30,6 +31,6 @@ signal slide_move_finished
 signal piece_clicked(piece_pixel_position: Vector2, piece_name: String)
 
 # ------------------------------------------------------------------------------------------------ #
-# -- Nove Overlay Signals -- #
+# -- Move Overlay Signals -- #
 # ------------------------------------------------------------------------------------------------ #
 signal move_overlay_clicked(overlay_pixel_position: Vector2)

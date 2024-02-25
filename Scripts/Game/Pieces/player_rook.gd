@@ -6,8 +6,8 @@ extends PlayerPieceBase
 
 func _init() -> void:
 	value = 5
-	piece_name = "rook"
-	next_piece_name = "queen"
+	piece_name = "player_rook"
+	next_piece_name = "player_queen"
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #

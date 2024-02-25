@@ -10,6 +10,8 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
+# TODO: I'm not actually sure if we need these GameStates. Does a state machine matter in this case? I'm 
+# 		not using it all the time, so may not actually be needed.
 enum GameState {
 	START_GAME,
 	WAITING_USER_INPUT,
@@ -20,16 +22,33 @@ enum GameState {
 	LOSE
 }
 
-var _current_state: GameState
+var _current_state: GameState	     # Keeps track of the current state the game is in
+var _slide_move_counter: int = 0     # Holds the amount of slide moves that have been performed during the game
+var _chess_move_counter: int = 0     # Holds the amount of chess moves that have been performed during the game
+var _chess_moves_remaining: int = 0  # Holds the amount of chess moves that the player can still use
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
 
 func _ready() -> void:
+	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
+	SignalBus.connect("chess_move_finished", _on_chess_move_finished)
+	
 	# TODO: This will be moved somewhere else once we get a title screen. When "start game" is pressed, 
 	# 		the state will be changed
 	change_state(GameState.START_GAME)
+	
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_slide_move_finished() -> void:
+	_slide_move_counter += 1
+	
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_chess_move_finished() -> void:
+	_chess_move_counter += 1
+	_chess_moves_remaining -= 1
 	
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #
@@ -64,4 +83,19 @@ func change_state(new_state: GameState) -> void:
 func get_current_game_state() -> GameState:
 	return _current_state
 
+# ------------------------------------------------------------------------------------------------ #
+
+func get_slide_move_count() -> int:
+	return _slide_move_counter
+
+# ------------------------------------------------------------------------------------------------ #
+
+func get_chess_move_count() -> int:
+	return _chess_move_counter
+
+# ------------------------------------------------------------------------------------------------ #
+
+func get_chess_moves_remaining() -> int:
+	return _chess_move_counter
+	
 # ------------------------------------------------------------------------------------------------ #
