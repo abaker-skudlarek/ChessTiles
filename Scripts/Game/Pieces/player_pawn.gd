@@ -17,7 +17,7 @@ func _init() -> void:
 ## pieces are in the other squares in the possible move range of the piece.
 func calculate_possible_moves(board: Array, current_grid_location: Vector2, board_width: int, board_height: int) -> Dictionary:
 
-	# Holds and array for each possible move. One for empty spaces, one for spaces that contain an enemy
+	# Holds an array for each possible move. One for empty spaces, one for spaces that contain an enemy
 	var possible_moves := {
 		"empty_spaces": [],
 		"enemy_spaces": []

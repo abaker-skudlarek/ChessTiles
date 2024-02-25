@@ -57,6 +57,7 @@ func calculate_possible_moves(board: Array, current_grid_location: Vector2, boar
 				elif location_status == BoardLocationStates.OCCUPIED_ENEMY:
 					possible_moves["enemy_spaces"].append(possible_move_location)
 					current_check_location = possible_move_location
+					break  # If the enemy is in our line of movement, we need to stop looking. We can't jump over pieces
 				# If the location doesn't have a piece on it, this is a possible move
 				elif location_status == BoardLocationStates.NOT_OCCUPIED:
 					possible_moves["empty_spaces"].append(possible_move_location)
