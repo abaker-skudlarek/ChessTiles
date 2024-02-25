@@ -5,6 +5,8 @@
 
 [node name="EnemyPawn" instance=ExtResource("1_el0t1")]
 scale = Vector2(0.75, 0.75)
-texture = ExtResource("2_qh1bo")
-piece_name = "enemy_pawn"
 value = 1
+piece_name = "enemy_pawn"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_qh1bo")

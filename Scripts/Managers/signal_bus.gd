@@ -23,14 +23,17 @@ signal slide_move_down
 # -- Board Signals -- #
 # ------------------------------------------------------------------------------------------------ #
 signal slide_move_finished
-signal chess_move_finished
+signal chess_move_to_empty_square_finished
+signal chess_move_to_enemy_square_finished
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Piece Signals -- #
 # ------------------------------------------------------------------------------------------------ #
-signal piece_clicked(piece_pixel_position: Vector2, piece_name: String)
+signal player_piece_clicked(piece_pixel_position: Vector2, piece_name: String)
+signal enemy_piece_clicked(piece_pixel_position: Vector2, piece_name: String)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Move Overlay Signals -- #
 # ------------------------------------------------------------------------------------------------ #
-signal move_overlay_clicked(overlay_pixel_position: Vector2)
+signal empty_move_overlay_clicked(overlay_pixel_position: Vector2)
+signal enemy_move_overlay_clicked(overlay_pixel_position: Vector2)

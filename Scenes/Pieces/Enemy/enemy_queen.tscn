@@ -5,6 +5,8 @@
 
 [node name="EnemyQueen" instance=ExtResource("1_ovy78")]
 scale = Vector2(0.75, 0.75)
-texture = ExtResource("2_87k8q")
-piece_name = "enemy_queen"
 value = 9
+piece_name = "enemy_queen"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_87k8q")
