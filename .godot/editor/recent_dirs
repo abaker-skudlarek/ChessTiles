@@ -1,8 +1,8 @@
-C:/Users/alexb/AppData/Local/Programs/Microsoft VS Code
-res://Scripts/Game
-res://Scripts/Game/Pieces
+/Applications/Visual Studio Code.app/Contents/MacOS
 res://Scripts/Managers
 res://Scenes
+res://Scripts/Game
+res://Scripts/Game/Pieces
 res://Sprites/Player
 res://Scripts
 res://
