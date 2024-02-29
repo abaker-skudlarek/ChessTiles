@@ -1,2 +1,12 @@
-res://Scenes/move_overlay.tscn
-res://Scripts/Managers/input_manager.gd
+res://Scripts/Game/board.gd
+res://Scenes/temp.tscn
+res://Scenes/main.tscn
+res://Scenes/Pieces/Player/player_pawn.tscn
+res://Scenes/Pieces/Player/player_bishop.tscn
+res://Scripts/Game/Pieces/player_pawn.gd
+res://Scenes/empty_move_overlay.tscn
+res://Scenes/enemy_move_overlay.tscn
+res://Scripts/Game/Pieces/enemy_piece_base.gd
+res://Scripts/Game/Pieces/player_piece_base.gd
+res://Scripts/Game/Pieces/player_bishop.gd
+res://Scenes/Pieces/Enemy/enemy_piece_base.tscn

@@ -29,9 +29,9 @@ func _is_location_occupied(grid_location: Vector2, board: Array) -> GameManager.
 	
 	if board_location_contents == null:
 		state = GameManager.BoardLocationStates.NOT_OCCUPIED
-	elif piece_family == GameManager.PLAYER_FAMILY:
+	elif board_location_contents.piece_family == GameManager.PLAYER_FAMILY:
 		state = GameManager.BoardLocationStates.OCCUPIED_PLAYER
-	elif piece_family == GameManager.ENEMY_FAMILY:
+	elif board_location_contents.piece_family == GameManager.ENEMY_FAMILY:
 		state = GameManager.BoardLocationStates.OCCUPIED_ENEMY
 		
 	return state
