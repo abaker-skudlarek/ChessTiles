@@ -107,231 +107,107 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 ## Moves a piece using a slide move from the current_piece_grid_location to the new_piece_grid_location.
 ## Returns 1 if the slide move was performed, 0 if not. Not using bools because the calling code wants
 ## to know how many slide moves are performed
-# TODO: This could definitely use some cleanup for readability
 func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> int:
-	
-	# TODO: probably want to redo everything in this function. It's too confusing right now.
-	# 		Improvements would be:
-	# 		1. Get the two pieces at the very beginning of the function, and operate based on them rather
-	# 			than the board location status. We have the piece's family name, so we can use that
-	# 	    2. Check the current piece first, and then compare to the piece we are moving to. Instead of 
-	# 			what we are doing now where we are checking where we are moving to, and then where we are
-	# 			moving from. It's backwards, and hard to understand.
-	# 		3. Implement a generic function that moves a piece to an empty square, and a generic function that
-	# 			moves a piece to a square with an enemy piece. Eventually, we can use this generic function
-	# 			in other places as well.
 
-	var current_location_occupied_status: GameManager.BoardLocationStates = _is_location_occupied(current_piece_grid_location)
-	var new_location_occupied_status: GameManager.BoardLocationStates = _is_location_occupied(new_piece_grid_location)
+	var piece_at_current_location: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
+	var piece_at_new_location: Node = _board[new_piece_grid_location.x][new_piece_grid_location.y]
 
-	# If the new grid location to move to is not occupied, simply move the piece
-	if new_location_occupied_status == GameManager.BoardLocationStates.NOT_OCCUPIED:
-		var piece: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
-		_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
-		_board[new_piece_grid_location.x][new_piece_grid_location.y] = piece
-
-		# Semi-animate the piece moving to the new location 
-		# TODO: A few problems/improvements with this:
-		# 		  1. The player can input a new direction DURING the tween, so the pieces change their 
-		# 			 direction before the tween ends
-		# 		  2. The player can input a diagonal direction, causing the pieces to move diagonally, 
-		# 			 which we do not want
-		# 		  3. When merging, the tween doesn't seem to fully finish. We need some better animation when merging happens
-		var move_tween := create_tween()
-		move_tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_CUBIC)
-
-		return 1
-
-	# If the new grid location to move to is occupied by a player piece, we need to check if the piece we are moving is a player
-	# or an enemy, to decide how to proceed
-	if new_location_occupied_status == GameManager.BoardLocationStates.OCCUPIED_PLAYER:
-
-		# If the current location has a player on it, we need to deal with merging.
-		if current_location_occupied_status == GameManager.BoardLocationStates.OCCUPIED_PLAYER:
-
-			var piece_at_current_grid_location: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
-			var piece_at_new_grid_location: Node = _board[new_piece_grid_location.x][new_piece_grid_location.y]
-		
-			# If the piece at the current grid location and the new grid location are the same, attempt to merge them
-			if piece_at_current_grid_location.piece_name == piece_at_new_grid_location.piece_name:
-				
-				# If the pieces that we are merging don't have a next piece name, don't merge, because
-				# there aren't any pieces after this one. This usually means that we have two kings merging
-				if piece_at_new_grid_location.next_piece_name == "":
-					return 0
-				
-				GameManager.change_state(GameManager.GameState.MERGING)  # TODO: is this really needed?
-				
-				# Remove both pieces from _board and _pieces_on_board
-				_board[new_piece_grid_location.x][new_piece_grid_location.y] = null	
-				_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
-				_pieces_on_board.erase(piece_at_current_grid_location)  
-				_pieces_on_board.erase(piece_at_new_grid_location)     
-
-				# Get the next piece that we want to spawn and spawn it at the new grid location
-				var piece_to_spawn: Resource = PieceSpawnManager.get_piece_by_name(piece_at_new_grid_location.next_piece_name)
-				_spawn_piece_at_grid_location(new_piece_grid_location, piece_to_spawn)
-				
-				# Delete the pieces that are merging
-				piece_at_current_grid_location.queue_free()
-				piece_at_new_grid_location.queue_free()
-				
-				GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
-				
-				return 1
-			
-			# If the new grid location is occupied but the pieces don't match, do nothing and return. No movement should happen
-			else:
-				return 0
-
-		# If the current location has an enemy on it, we need to deal with taking the piece
-		elif current_location_occupied_status == GameManager.BoardLocationStates.OCCUPIED_ENEMY:
-
-			var piece_to_move: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
-			var piece_at_new_grid_location: Node = _board[new_piece_grid_location.x][new_piece_grid_location.y]
-
-			# Delete the enemy piece at the location we are moving to
-			_pieces_on_board.erase(piece_at_new_grid_location)
-			piece_at_new_grid_location.queue_free()
-
-			# Update the moving piece's location in the _board array before moving it
-			_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
-			_board[new_piece_grid_location.x][new_piece_grid_location.y] = piece_to_move
-			
-			# Tween the piece to the new location
-			var move_tween := create_tween()
-			move_tween.tween_property(piece_to_move, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_CUBIC)
-
-			return 1
-
-	if new_location_occupied_status == GameManager.BoardLocationStates.OCCUPIED_ENEMY:
-
-			
-
-
-		return 1
-
-	# If the new grid location to move to is ERROR, something bad happened. Print an error and return 0
-	if new_location_occupied_status == GameManager.BoardLocationStates.ERROR:
-		printerr("!!! BoardLocationState is ERROR. Something bad happened !!!")
+	# If there is no piece at the current location, we shouldn't have called this function. Print and error and return
+	if piece_at_current_location == null:
+		printerr("!!! Attempted to slide move from a square with no piece on it !!!")
 		return 0
 
-	# We shouldn't get to this line of code, if we do, print an error and return 0.
-	printerr("!!! We got to the end of _slide_move_piece without returning anything !!!")
+	# If there is no piece at the new location, we can simply move the piece at the current location to the new location
+	if piece_at_new_location == null:
+		_move_piece_from_location_a_to_empty_location_b(current_piece_grid_location, new_piece_grid_location)
+		return 1
+
+	# If we've gotten here, we know that there is a piece at both the current and new locations. We need to check
+	# which family the pieces belong to and deal with them based on that
+
+	# If the piece at the current location is a player piece and the piece at the new location is a player piece, we
+	# need to check if we can merge them, or if they can't move
+	if (
+		piece_at_current_location.piece_family == GameManager.PLAYER_FAMILY and
+		piece_at_new_location.piece_family == GameManager.PLAYER_FAMILY
+	):
+		# If the pieces have the same name, we can attempt to merge them
+		if piece_at_current_location.piece_name == piece_at_new_location.piece_name:
+
+			# We need to do a quick check to make sure that the pieces have a next piece name
+			# If they don't, then we can't merge because there is no piece to upgrade to. This is usually
+			# the case when we have two kings
+			if piece_at_current_location.next_piece_name == "":
+				return 0
+
+			# If we've gotten here, we know the pieces are the same and they have a next piece, so we can merge them
+			_move_and_merge_piece_from_location_a_to_location_b(current_piece_grid_location, new_piece_grid_location)
+			return 1
+		
+		# If the pieces don't have the same name, we can't merge them, so don't move and simply return 0
+		else:
+			return 0
+	
+	# If the piece at the current location is a player piece and the piece at the new location is an enemy piece, 
+	# we simply want to allow the player piece to take the enemy piece
+	if (
+		piece_at_current_location.piece_family == GameManager.PLAYER_FAMILY and
+		piece_at_new_location.piece_family == GameManager.ENEMY_FAMILY
+	):
+		_move_and_take_piece_from_location_a_to_location_b(current_piece_grid_location, new_piece_grid_location)
+		return 1
+
+	# If the piece at the current location is an enemy piece and the piece at the new location is a player piece, 
+	# we simply want to allow the enemy piece to take the player piece
+	if (
+		piece_at_current_location.piece_family == GameManager.ENEMY_FAMILY and
+		piece_at_new_location.piece_family == GameManager.PLAYER_FAMILY
+	):
+		_move_and_take_piece_from_location_a_to_location_b(current_piece_grid_location, new_piece_grid_location)
+		return 1
+
+	# If the piece at the current location is an enemy piece and the piece at the new location is an enemy piece, 
+	# nothing should happen. We don't want to allow enemy pieces to merge or take each other
+	if (
+		piece_at_current_location.piece_family == GameManager.ENEMY_FAMILY and
+		piece_at_new_location.piece_family == GameManager.ENEMY_FAMILY
+	):
+		return 0
+
+	# If we've gotten all the way down here without returning yet, something weird happened. Print an error and return 0
+	printerr("!!! Something weird happened. We got to the bottom of _slide_move_piece() in board.gd !!!")
 	return 0
-
-	# # If the new grid location to move to is occupied, either merge the pieces or don't perform the movement
-	# if _is_square_occupied(new_piece_grid_location):
-		
-	# 	var piece_at_current_grid_location: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
-	# 	var piece_at_new_grid_location: Node = _board[new_piece_grid_location.x][new_piece_grid_location.y]
-		
-	# 	# If the piece at the current grid location and the new grid location are the same, merge them
-	# 	if piece_at_current_grid_location.piece_name == piece_at_new_grid_location.piece_name:
-			
-	# 		# If the pieces that we are merging don't have a next piece name, don't merge, because
-	# 		# there aren't any pieces after this one. This usually means that we have two kings merging
-	# 		if piece_at_new_grid_location.next_piece_name == "":
-	# 			return 0
-			
-	# 		GameManager.change_state(GameManager.GameState.MERGING)
-			
-	# 		# TODO: This doesn't work because the objects are freed before the tween starts so it doesn't start
-	# 		# 		May be able to connect to the tween finished signal and free the objects then?
-	# 		# 		I'd like to have some kind of animation when pieces are merging
-	# 		#var move_tween := create_tween()
-	# 		#move_tween.tween_property(piece_at_current_grid_location, "location", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_EXPO)
-			
-	# 		# Remove both pieces from _board and _pieces_on_board
-	# 		_board[new_piece_grid_location.x][new_piece_grid_location.y] = null	
-	# 		_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
-	# 		_pieces_on_board.erase(piece_at_current_grid_location)  
-	# 		_pieces_on_board.erase(piece_at_new_grid_location)     
-
-	# 		# Get the next piece that we want to spawn and spawn it at the new grid location
-	# 		var piece_to_spawn: Resource = PieceSpawnManager.get_piece_by_name(piece_at_new_grid_location.next_piece_name)
-	# 		_spawn_piece_at_grid_location(new_piece_grid_location, piece_to_spawn)
-			
-	# 		# Delete the pieces that are merging
-	# 		piece_at_current_grid_location.queue_free()
-	# 		piece_at_new_grid_location.queue_free()
-			
-	# 		GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
-			
-	# 		return 1
-		
-	# 	# If the new grid location is occupied but the pieces don't match, do nothing and return. No movement should happen
-	# 	else:
-	# 		return 0
-		
-	## If the new grid location to move to is not occupied, move the piece to the new location without worrying about merging.
-	#else:
-	#	var piece: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
-	#	_board[current_piece_grid_location.x][current_piece_grid_location.y] = null
-	#	_board[new_piece_grid_location.x][new_piece_grid_location.y] = piece
-	#	
-	#	# TODO: This makes the sprite move to the final location in the set amount of time
-	#	# TODO: A few problems/improvements with this:
-	#	# 		  1. The player can input a new direction DURING the tween, so the pieces change their 
-	#	# 			 direction before the tween ends
-	#	# 		  2. The player can input a diagonal direction, causing the pieces to move diagonally, 
-	#	# 			 which we do not want
-	#	# 		  3. When merging, the tween doesn't seem to fully finish. We need some better animation when merging happens
-	#	# 		  4. Find the best transition settings. Using set_trans, we can change how the sprite moves to it's final destination
-	#	var move_tween := create_tween()
-	#	#move_tween.connect("finished", _on_move_tween_finished) # TODO: This didn't seem to work like I wanted
-	#	move_tween.tween_property(piece, "position", _grid_to_pixel(new_piece_grid_location), .3).set_trans(Tween.TRANS_CUBIC)
-	#	
-	#	return 1
 		
 # ------------------------------------------------------------------------------------------------ #
 
-## Move a single piece from one square to an empty square, according to it's normal chess movement.
+## Move the last clicked piece, according to its chess movementm, from its location to a new empty location
 func _chess_move_piece_to_empty_square(desired_pixel_location: Vector2) -> void:
 
-	# Update the piece's location in the _board array before moving it
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
-	_board[last_clicked_piece_grid_location.x][last_clicked_piece_grid_location.y] = null
 	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
-	_board[desired_grid_location.x][desired_grid_location.y] = _last_clicked_piece
-	
-	# Tween the piece to the new location
-	var move_tween := create_tween()
-	move_tween.tween_property(_last_clicked_piece, "position", desired_pixel_location, .3).set_trans(Tween.TRANS_CUBIC)
+
+	_move_piece_from_location_a_to_empty_location_b(last_clicked_piece_grid_location, desired_grid_location)
 	
 	SignalBus.emit_signal("chess_move_to_empty_square_finished")
 	
 # ------------------------------------------------------------------------------------------------ #
 
-## Move a single piece from one square to another square that is occupied by an enemy piece
+## Move the last clicked piece, according to its chess movement, from its location to a new location 
+## that is occupied by an enemy piece
 func _chess_move_piece_to_enemy_square(desired_pixel_location: Vector2) -> void:
 
-	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
-	var piece_at_desired_grid_location: Node = _board[desired_grid_location.x][desired_grid_location.y]
-
-	# Delete the enemy piece at the location we are moving to
-	_pieces_on_board.erase(piece_at_desired_grid_location)
-	piece_at_desired_grid_location.queue_free()
-
-	# Update the moving piece's location in the _board array before moving it
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
-	_board[last_clicked_piece_grid_location.x][last_clicked_piece_grid_location.y] = null
-	_board[desired_grid_location.x][desired_grid_location.y] = _last_clicked_piece
+	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
 	
-	# Tween the piece to the new location
-	var move_tween := create_tween()
-	move_tween.tween_property(_last_clicked_piece, "position", desired_pixel_location, .3).set_trans(Tween.TRANS_CUBIC)
+	_move_and_take_piece_from_location_a_to_location_b(last_clicked_piece_grid_location, desired_grid_location)
 
-	# TODO: May want to add the enemy pieces value to this signal, if we care about that for scoring	
-	SignalBus.emit_signal("chess_move_to_empty_square_finished")
+	SignalBus.emit_signal("chess_move_to_enemy_square_finished")
 	
 # ------------------------------------------------------------------------------------------------ #
 
-
 ## Spawns pieces onto the board
-# TODO: 1. Need to implement spawning of enemy pieces
-# TODO: 2. In Threes, the pieces are only spawned at the edges of the board. We might want to do that as well
-# TODO: 3. We want to make sure pieces spawn at places that weren't just occupied or are going to be occupied by a move
+# TODO: 1. In Threes, the pieces are only spawned at the edges of the board. We might want to do that as well
+# TODO: 2. We want to make sure pieces spawn at places that weren't just occupied or are going to be occupied by a move
 func _spawn_pieces_at_random_locations(pieces_to_spawn: Array) -> void:
 
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
@@ -441,6 +317,62 @@ func _pixel_to_grid(pixel_location: Vector2) -> Vector2:
 	
 # ------------------------------------------------------------------------------------------------ #
 
+## Helper function that moves a piece from location_a to location_b, assuming that location_b is empty
+func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
+
+	var piece_to_move: Node = _board[grid_location_a.x][grid_location_a.y]
+
+	_board[grid_location_a.x][grid_location_a.y] = null
+	_board[grid_location_b.x][grid_location_b.y] = piece_to_move
+
+	# Tween the piece to the new location
+	var move_tween := create_tween()
+	move_tween.tween_property(piece_to_move, "position", _grid_to_pixel(grid_location_b), .3).set_trans(Tween.TRANS_CUBIC)
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Helper function that moves a piece from location_a to location_b and merges the piece that's 
+## moving from location_a with the piece that's in location_b
+## This function assumes that we have already checked that the two pieces are valid to merge into
+## each other. That needs to be done somewhere before this function is called in the calling code.
+func _move_and_merge_piece_from_location_a_to_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
+
+	var piece_at_grid_location_a: Node = _board[grid_location_a.x][grid_location_a.y]
+	var piece_at_grid_location_b: Node = _board[grid_location_b.x][grid_location_b.y]
+
+	# Remove both pieces from _board and _pieces_on_board
+	_board[grid_location_a.x][grid_location_a.y] = null
+	_board[grid_location_b.x][grid_location_b.y] = null
+	_pieces_on_board.erase(piece_at_grid_location_a)
+	_pieces_on_board.erase(piece_at_grid_location_b)
+
+	# Get the next piece that we want to spawn and spawn it at grid_location_b
+	# NOTE: At this point, we're assuming that we are safe to merge. Meaning, the calling code of
+	# 		this function has already checked that the pieces we are trying to merge are the same
+	var upgraded_piece_to_spawn: Resource = PieceSpawnManager.get_piece_by_name(piece_at_grid_location_a.next_piece_name)
+	_spawn_piece_at_grid_location(grid_location_b, upgraded_piece_to_spawn)
+
+	# Delete the pieces that are merging
+	piece_at_grid_location_a.queue_free()
+	piece_at_grid_location_b.queue_free()
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Helper function that moves a piece from location_a to location_b and takes the piece in location_b.
+## This can be used during a chess move, or when a slide move occurs and two pieces of different piece
+## families collide with each other.
+func _move_and_take_piece_from_location_a_to_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
+
+	# Delete the piece at location_b
+	var piece_at_grid_location_b: Node = _board[grid_location_b.x][grid_location_b.y]
+	_pieces_on_board.erase(piece_at_grid_location_b)
+	piece_at_grid_location_b.queue_free()
+
+	# We've now created an empty space to move to, so we can use our function to move to an empty space
+	_move_piece_from_location_a_to_empty_location_b(grid_location_a, grid_location_b)
+
+# ------------------------------------------------------------------------------------------------ #
+
 ## Helper to check if a board square location is occupied, and if so, by who
 func _is_location_occupied(grid_location: Vector2) -> GameManager.BoardLocationStates:
 	var board_location_contents: Node = _board[grid_location.x][grid_location.y]
@@ -505,7 +437,10 @@ func _on_slide_move_down() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_slide_move_finished() -> void:
-	var piece_to_spawn: Array = PieceSpawnManager.get_new_pieces(1)
+	# TODO: this is a very basic way to spawn between 1 and 3 pieces each slide move,
+	# 		we probably want to make this a little more dynamic at some point
+	var num_pieces_to_spawn: int = randi() % 3 + 1
+	var piece_to_spawn: Array = PieceSpawnManager.get_new_pieces(num_pieces_to_spawn)
 	_spawn_pieces_at_random_locations(piece_to_spawn)
 
 # ------------------------------------------------------------------------------------------------ #

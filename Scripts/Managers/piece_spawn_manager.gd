@@ -35,7 +35,7 @@ var _enemy_piece_spawn_rates: Dictionary = {
 	"enemy_king": 0
 }
 
-var _base_enemy_piece_spawn_chance: int = 25  # 25% chance to spawn an enemy piece, at base. Some effects may change this number to make it more likely
+var _base_enemy_piece_spawn_chance: int = 30  # 30% chance to spawn an enemy piece, at base. Some effects may change this number to make it more likely
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
