@@ -11,8 +11,6 @@ extends Node
 # ------------------------------------------------------------------------------------------------ 
 
 const NUM_STARTING_PIECES: int = 2  # This is the amount of pieces on the board when the game starts
-const PLAYER_PIECE_FAMILY: String = "player"
-const ENEMY_PIECE_FAMILY: String = "enemy"
 
 # Defines the chances for each player piece to spawn. The number is the percentage chance.
 var _player_piece_spawn_rates: Dictionary = {
@@ -37,7 +35,7 @@ var _enemy_piece_spawn_rates: Dictionary = {
 	"enemy_king": 0
 }
 
-var _base_enemy_piece_spawn_chance: int = 25  # 25% chance to spawn an enemy piece, at base. Some effects may change this number to make it more likely
+var _base_enemy_piece_spawn_chance: int = 30  # 30% chance to spawn an enemy piece, at base. Some effects may change this number to make it more likely
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -49,7 +47,7 @@ func _determine_new_piece(piece_family: String) -> String:
 	var new_piece: String = ""
 	
 	# Determine which dictionary to use, based on if we want to get a new player piece or enemy piece
-	var piece_family_dictionary: Dictionary = _player_piece_spawn_rates if piece_family == PLAYER_PIECE_FAMILY else _enemy_piece_spawn_rates
+	var piece_family_dictionary: Dictionary = _player_piece_spawn_rates if piece_family == GameManager.PLAYER_FAMILY else _enemy_piece_spawn_rates
 	var possible_pieces: Array = piece_family_dictionary.keys()
 	
 	# Get a random number between 1 and 100
@@ -78,7 +76,7 @@ func get_starting_pieces() -> Array:
 	var pieces_to_spawn: Array = []  # Array of each piece as a Resource
 	
 	for i in NUM_STARTING_PIECES:
-		var piece_name: String = _determine_new_piece(PLAYER_PIECE_FAMILY)
+		var piece_name: String = _determine_new_piece(GameManager.PLAYER_FAMILY)
 		pieces_to_spawn.append(get_piece_by_name(piece_name))
 			
 	return pieces_to_spawn
@@ -94,10 +92,10 @@ func get_new_pieces(num_pieces_to_spawn: int) -> Array:
 	for i in num_pieces_to_spawn:
 		var piece_color_spawn_chance: int = randi() % 100 + 1
 		if piece_color_spawn_chance <= _base_enemy_piece_spawn_chance:
-			var piece_name: String = _determine_new_piece(ENEMY_PIECE_FAMILY)
+			var piece_name: String = _determine_new_piece(GameManager.ENEMY_FAMILY)
 			pieces_to_spawn.append(get_piece_by_name(piece_name))
 		else:
-			var piece_name: String = _determine_new_piece(PLAYER_PIECE_FAMILY)
+			var piece_name: String = _determine_new_piece(GameManager.PLAYER_FAMILY)
 			pieces_to_spawn.append(get_piece_by_name(piece_name))
 	
 	return pieces_to_spawn

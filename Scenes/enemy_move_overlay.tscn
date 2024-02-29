@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://0u1tn5urctiq"]
+[gd_scene load_steps=4 format=3 uid="uid://d3jrrpaqw32y1"]
 
 [ext_resource type="Script" path="res://Scripts/Game/enemy_move_overlay.gd" id="1_i25rs"]
 [ext_resource type="Texture2D" uid="uid://csqbyvcuu6sp2" path="res://Sprites/Squares/red_move_square_overlay.png" id="2_iduaq"]
