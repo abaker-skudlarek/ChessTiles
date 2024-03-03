@@ -30,23 +30,27 @@ enum BoardLocationStates {
 	ERROR			  # Default state
 }
 
+const INITIAL_CHESS_MOVES: int = 5
 # NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
 const PLAYER_FAMILY: String = "player"
 const ENEMY_FAMILY: String = "enemy"
 
-var _current_state: GameState	     # Keeps track of the current state the game is in
-var _slide_move_counter: int = 0     # Holds the amount of slide moves that have been performed during the game
-var _chess_move_counter: int = 0     # Holds the amount of chess moves that have been performed during the game
-var _chess_moves_remaining: int = 0  # Holds the amount of chess moves that the player can still use
+var _current_state: GameState     # Keeps track of the current state the game is in
+var _slide_move_counter: int = 0  # Holds the amount of slide moves that have been performed during the game
+var _chess_move_counter: int = 0  # Holds the amount of chess moves that have been performed during the game
+var _chess_moves_remaining: int:  # Holds the amount of chess moves that the player can still use
+	set(value):  # Using a setter so that the value is never set below 0
+		_chess_moves_remaining = 0 if value < 0 else value
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
 
 func _ready() -> void:
+	SignalBus.connect("game_initialized", _on_game_initialized)
 	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
 	SignalBus.connect("chess_move_finished", _on_chess_move_finished)
-	
+
 	# TODO: This will be moved somewhere else once we get a title screen. When "start game" is pressed, 
 	# 		the state will be changed
 	change_state(GameState.START_GAME)
@@ -61,7 +65,14 @@ func _on_slide_move_finished() -> void:
 func _on_chess_move_finished() -> void:
 	_chess_move_counter += 1
 	_chess_moves_remaining -= 1
+	SignalBus.emit_signal("chess_moves_remaining_updated", _chess_moves_remaining)
 	
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_game_initialized() -> void:
+	_chess_moves_remaining = INITIAL_CHESS_MOVES
+	SignalBus.emit_signal("chess_moves_remaining_updated", _chess_moves_remaining)
+
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #
 # ------------------------------------------------------------------------------------------------ #
@@ -71,8 +82,6 @@ func _on_chess_move_finished() -> void:
 ## for that state will be executed.
 func change_state(new_state: GameState) -> void:
 	_current_state = new_state
-	
-	#print("_current_state = ", GameState.keys()[new_state])
 
 	match _current_state:
 		GameState.START_GAME:
@@ -110,4 +119,9 @@ func get_chess_move_count() -> int:
 func get_chess_moves_remaining() -> int:
 	return _chess_move_counter
 	
+# ------------------------------------------------------------------------------------------------ #
+
+func is_chess_move_allowed() -> bool:
+	return _chess_moves_remaining != 0
+
 # ------------------------------------------------------------------------------------------------ #

@@ -43,7 +43,8 @@ project/assembly_name="Chess Tiles"
 folder_colors={
 "res://Scenes/": "green",
 "res://Scripts/": "purple",
-"res://Sprites/": "orange"
+"res://Sprites/": "orange",
+"res://UI/": "pink"
 }
 
 [input]

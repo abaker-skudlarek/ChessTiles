@@ -183,12 +183,16 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 ## Move the last clicked piece, according to its chess movementm, from its location to a new empty location
 func _chess_move_piece_to_empty_square(desired_pixel_location: Vector2) -> void:
 
+	# If a chess move isn't allowed, return and do nothing
+	if !GameManager.is_chess_move_allowed():
+		return
+
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
 	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
 
 	_move_piece_from_location_a_to_empty_location_b(last_clicked_piece_grid_location, desired_grid_location)
 	
-	SignalBus.emit_signal("chess_move_to_empty_square_finished")
+	SignalBus.emit_signal("chess_move_finished")
 	
 # ------------------------------------------------------------------------------------------------ #
 
@@ -196,12 +200,16 @@ func _chess_move_piece_to_empty_square(desired_pixel_location: Vector2) -> void:
 ## that is occupied by an enemy piece
 func _chess_move_piece_to_enemy_square(desired_pixel_location: Vector2) -> void:
 
+	# If a chess move isn't allowed, return and do nothing
+	if !GameManager.is_chess_move_allowed():
+		return
+
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
 	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
 	
 	_move_and_take_piece_from_location_a_to_location_b(last_clicked_piece_grid_location, desired_grid_location)
 
-	SignalBus.emit_signal("chess_move_to_enemy_square_finished")
+	SignalBus.emit_signal("chess_move_finished")
 	
 # ------------------------------------------------------------------------------------------------ #
 
@@ -405,7 +413,12 @@ func _on_state_changed_start_game() -> void:
 	# Get and spawn our starting pieces
 	var starting_pieces_to_spawn: Array = PieceSpawnManager.get_starting_pieces()
 	_spawn_pieces_at_random_locations(starting_pieces_to_spawn)
-	
+
+	# TODO: Not sure if this is how we should be doing this. But we need to let things know when the
+	# 		game has finished being set up. Really, it's that the board is being set up. Maybe this
+	# 		is something that should be done better, but not too worried about it right now.
+	SignalBus.emit_signal("game_initialized")
+
 	# TODO: We are allowing the board scene to change the state of the game, using the GameManager Singleton.
 	# 		I honestly don't know if this is good or not. This way, any script can change the state using GameManager,
 	# 		and that scares me. But, maybe it's not a bad thing. I'm not going to focus too hard on
@@ -454,7 +467,6 @@ func _on_player_piece_clicked(piece_pixel_location: Vector2, piece_name: String)
 	var piece_at_grid_location: Node = _board[piece_grid_location.x][piece_grid_location.y]
 	if piece_at_grid_location.has_method("calculate_possible_moves"):
 		var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, piece_grid_location, GRID_WIDTH, GRID_HEIGHT)
-		print("possible_moves: ", possible_moves)
 		_spawn_move_overlays(possible_moves)
 	else:
 		printerr(piece_at_grid_location.piece_name, " does not have method 'calculate_possible_moves'!")
