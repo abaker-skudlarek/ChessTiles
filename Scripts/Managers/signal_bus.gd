@@ -10,6 +10,7 @@ signal state_changed_chess_move
 signal state_changed_merging
 signal state_changed_win
 signal state_changed_lose
+signal chess_moves_remaining_updated(num_moves: int)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Input Manager Signals -- #
@@ -22,9 +23,9 @@ signal slide_move_down
 # ------------------------------------------------------------------------------------------------ #
 # -- Board Signals -- #
 # ------------------------------------------------------------------------------------------------ #
+signal game_initialized
 signal slide_move_finished
-signal chess_move_to_empty_square_finished
-signal chess_move_to_enemy_square_finished
+signal chess_move_finished
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Piece Signals -- #
