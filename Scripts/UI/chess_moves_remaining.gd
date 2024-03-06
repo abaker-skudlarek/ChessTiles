@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends VBoxContainer
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -10,6 +10,6 @@ func _enter_tree() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_chess_moves_remaining_updated(num_moves: int) -> void:
-	$ChessMovesRemaining/NumRemaining.text = str(num_moves) 
+	$NumRemaining.text = str(num_moves) 
 
 # ------------------------------------------------------------------------------------------------ #

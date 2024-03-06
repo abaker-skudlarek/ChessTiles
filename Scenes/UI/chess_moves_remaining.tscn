@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://cctwbiwmdueno"]
+
+[ext_resource type="FontFile" uid="uid://2ic7ojsn1a1o" path="res://UI/Fonts/Kenney Bold.ttf" id="1_2kth7"]
+[ext_resource type="Script" path="res://Scripts/UI/chess_moves_remaining.gd" id="1_wymqt"]
+
+[sub_resource type="Theme" id="Theme_0ndyv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wuapa"]
+font = ExtResource("1_2kth7")
+font_size = 24
+outline_size = 20
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_w5to6"]
+font = ExtResource("1_2kth7")
+font_size = 64
+outline_size = 20
+outline_color = Color(0, 0, 0, 1)
+
+[node name="ChessMovesRemaining" type="VBoxContainer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -134.0
+offset_top = 20.0
+offset_right = 115.0
+offset_bottom = 156.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_0ndyv")
+theme_override_constants/separation = 10
+alignment = 1
+script = ExtResource("1_wymqt")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_2kth7")
+theme_override_font_sizes/font_size = 18
+text = "Chess Moves"
+label_settings = SubResource("LabelSettings_wuapa")
+horizontal_alignment = 3
+
+[node name="NumRemaining" type="Label" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_2kth7")
+theme_override_font_sizes/font_size = 64
+text = "0"
+label_settings = SubResource("LabelSettings_w5to6")
+horizontal_alignment = 1
