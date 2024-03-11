@@ -1,7 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://mj0ipvmp8igw"]
+[gd_scene load_steps=3 format=3 uid="uid://mj0ipvmp8igw"]
 
-[ext_resource type="PackedScene" uid="uid://cctwbiwmdueno" path="res://Scenes/UI/chess_moves_remaining.tscn" id="1_jh38v"]
+[ext_resource type="PackedScene" uid="uid://cctwbiwmdueno" path="res://Scenes/UI/chess_moves_remaining_ui.tscn" id="1_jh38v"]
+[ext_resource type="PackedScene" uid="uid://c7xafemfja2em" path="res://Scenes/UI/game_over_ui.tscn" id="2_86e4r"]
 
 [node name="HUD" type="CanvasLayer"]
 
-[node name="ChessMovesRemaining" parent="." instance=ExtResource("1_jh38v")]
+[node name="ChessMovesRemainingUI" parent="." instance=ExtResource("1_jh38v")]
+
+[node name="GameOverUI" parent="." instance=ExtResource("2_86e4r")]
