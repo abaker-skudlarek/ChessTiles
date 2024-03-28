@@ -124,7 +124,7 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 	var piece_at_current_location: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
 	var piece_at_new_location: Node = _board[new_piece_grid_location.x][new_piece_grid_location.y]
 
-	# If there is no piece at the current location, we shouldn't have called this function. Print and error and return
+	# If there is no piece at the current location, we shouldn't have called this function. Print an error and return
 	if piece_at_current_location == null:
 		printerr("!!! Attempted to slide move from a square with no piece on it !!!")
 		return 0
@@ -133,9 +133,6 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 	if piece_at_new_location == null:
 		_move_piece_from_location_a_to_empty_location_b(current_piece_grid_location, new_piece_grid_location)
 		return 1
-
-	# If we've gotten here, we know that there is a piece at both the current and new locations. We need to check
-	# which family the pieces belong to and deal with them based on that
 
 	# If the piece at the current location is a player piece and the piece at the new location is a player piece, we
 	# need to check if we can merge them, or if they can't move
@@ -159,43 +156,10 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		# If the pieces don't have the same name, we can't merge them, so don't move and simply return 0
 		else:
 			return 0
-	
-	# If the piece at the current location is a player piece and the piece at the new location is an enemy piece, 
-	# we simply want to allow the player piece to take the enemy piece
-	if (
-		piece_at_current_location.piece_family == GameManager.PLAYER_FAMILY and
-		piece_at_new_location.piece_family == GameManager.ENEMY_FAMILY
-	):
-		# TODO: 
-		# TODO: As I'm testing game lose conditions, I am disabling slide move taking, so that it doesn't take forever to lock up the board
-		# TODO: 
-		#_move_and_take_piece_from_location_a_to_location_b(current_piece_grid_location, new_piece_grid_location)
-		#return 1
-		return 0
 
-	# If the piece at the current location is an enemy piece and the piece at the new location is a player piece, 
-	# we simply want to allow the enemy piece to take the player piece
-	if (
-		piece_at_current_location.piece_family == GameManager.ENEMY_FAMILY and
-		piece_at_new_location.piece_family == GameManager.PLAYER_FAMILY
-	):
-		# TODO: 
-		# TODO: As I'm testing game lose conditions, I am disabling slide move taking, so that it doesn't take forever to lock up the board
-		# TODO: 
-		# _move_and_take_piece_from_location_a_to_location_b(current_piece_grid_location, new_piece_grid_location)
-		# return 1
-		return 0
-
-	# If the piece at the current location is an enemy piece and the piece at the new location is an enemy piece, 
-	# nothing should happen. We don't want to allow enemy pieces to merge or take each other
-	if (
-		piece_at_current_location.piece_family == GameManager.ENEMY_FAMILY and
-		piece_at_new_location.piece_family == GameManager.ENEMY_FAMILY
-	):
-		return 0
-
-	# If we've gotten all the way down here without returning yet, something weird happened. Print an error and return 0
-	printerr("!!! Something weird happened. We got to the bottom of _slide_move_piece() in board.gd !!!")
+	# If we've gotten here, then the piece we are trying to slide move is not allowed to slide move, either because 
+	# it's two enemy pieces (enemy piece merging is not allowed), or because they are two opposing pieces (piece 
+	# capturing during a slide move is not allowed)
 	return 0
 		
 # ------------------------------------------------------------------------------------------------ #
@@ -448,8 +412,6 @@ func _move_and_merge_piece_from_location_a_to_location_b(grid_location_a: Vector
 # ------------------------------------------------------------------------------------------------ #
 
 ## Helper function that moves a piece from location_a to location_b and takes the piece in location_b.
-## This can be used during a chess move, or when a slide move occurs and two pieces of different piece
-## families collide with each other.
 func _move_and_take_piece_from_location_a_to_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
 
 	# Delete the piece at location_b
@@ -652,11 +614,8 @@ func _on_enemy_move_overlay_clicked(overlay_pixel_location: Vector2) -> void:
 	_remove_move_overlays()
 	_chess_move_piece_to_enemy_square(overlay_pixel_location)
 
-
 # ------------------------------------------------------------------------------------------------ #
 # -- Public Functions -- #
 # ------------------------------------------------------------------------------------------------ #
-
-
 
 
