@@ -17,8 +17,6 @@ var _shown_move_overlays: Array = [] # Array containing a list of all the move o
 var _last_clicked_piece: Node 		 # The last piece that was clicked, needed to know which piece to chess move
 									 # TODO: There might be a better way to do this, but not going to worry about it yet
 
-var _can_move := true  # TODO: this is temporary for testing checking win conditions, don't keep this
-
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
