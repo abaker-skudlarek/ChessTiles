@@ -44,8 +44,13 @@ folder_colors={
 "res://Scenes/": "green",
 "res://Scripts/": "purple",
 "res://Sprites/": "orange",
+"res://Themes/": "yellow",
 "res://UI/": "pink"
 }
+
+[gui]
+
+theme/custom="res://Themes/ui_theme.tres"
 
 [input]
 

@@ -1,21 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cctwbiwmdueno"]
+[gd_scene load_steps=3 format=3 uid="uid://cctwbiwmdueno"]
 
 [ext_resource type="Script" path="res://Scripts/UI/chess_moves_remaining_ui.gd" id="1_u7cwo"]
-[ext_resource type="FontFile" uid="uid://2ic7ojsn1a1o" path="res://UI/Fonts/Kenney Bold.ttf" id="2_c6vao"]
 
 [sub_resource type="Theme" id="Theme_0ndyv"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_wuapa"]
-font = ExtResource("2_c6vao")
-font_size = 24
-outline_size = 20
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_w5to6"]
-font = ExtResource("2_c6vao")
-font_size = 64
-outline_size = 20
-outline_color = Color(0, 0, 0, 1)
 
 [node name="ChessMovesRemainingUI" type="VBoxContainer"]
 anchors_preset = 5
@@ -34,16 +21,11 @@ script = ExtResource("1_u7cwo")
 
 [node name="ChessMovesLabel" type="Label" parent="."]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_c6vao")
-theme_override_font_sizes/font_size = 18
 text = "Chess Moves"
-label_settings = SubResource("LabelSettings_wuapa")
 horizontal_alignment = 3
 
 [node name="NumRemaining" type="Label" parent="."]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_c6vao")
 theme_override_font_sizes/font_size = 64
 text = "0"
-label_settings = SubResource("LabelSettings_w5to6")
 horizontal_alignment = 1

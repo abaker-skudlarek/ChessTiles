@@ -51,12 +51,12 @@ func _enter_tree() -> void:
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
 func _process_slide_move(direction_to_move: Vector2) -> void:
 
-	# TODO: don't keep this. just for testing checking lose conditions
-	if _can_move:
+	# Only move if we are waiting for user input
+	if GameManager.get_current_game_state() == GameManager.GameState.WAITING_USER_INPUT:
+
+		GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
 
 		var slide_moves_performed: int = 0
-		
-		GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
 		
 		# Reset the move overlays when performing a slide move
 		_remove_move_overlays()
@@ -108,16 +108,13 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
 							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
 
-		# If we performed at least 1 slide move, emit the signal
 		if slide_moves_performed > 0:
 			SignalBus.emit_signal("slide_move_finished")
 
-		# TODO: probably don't want to keep this here, just doing it here for testing to make it easy
 		if _is_game_over():
-			_can_move = false
-			print("Game over!!")
-
-		GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
+			GameManager.change_state(GameManager.GameState.GAME_OVER)
+		else:
+			GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -495,8 +492,6 @@ func _set_last_clicked_piece(piece_pixel_location: Vector2) -> void:
 ## Returns true if it is, meaning there are no valid slide moves NOR chess moves.
 ## Returns false if it isn't, meaning there is at least one valid slide more OR chess move
 func _is_game_over() -> bool:
-
-	# TODO: If we keep slide move capturing, we need to make sure that we check if a slide move capture is valid. If it is, the game isn't over
 
 	# If there is at least one empty space, the game cannot be over yet
 	if _get_random_empty_board_spaces(1) != []:

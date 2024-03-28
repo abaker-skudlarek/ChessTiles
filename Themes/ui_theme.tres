@@ -1,0 +1,46 @@
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://dfotqr3hnuwjr"]
+
+[ext_resource type="FontFile" uid="uid://2ic7ojsn1a1o" path="res://UI/Fonts/Kenney Bold.ttf" id="1_xltjr"]
+[ext_resource type="Texture2D" uid="uid://cthmpfqujkfca" path="res://UI/red_button02.png" id="2_82wn5"]
+[ext_resource type="Texture2D" uid="uid://boyp6pprou8io" path="res://UI/grey_panel.png" id="2_blssu"]
+[ext_resource type="Texture2D" uid="uid://bxt7kh76nea4w" path="res://UI/red_button01.png" id="3_ssdfo"]
+[ext_resource type="Texture2D" uid="uid://cmya03lyphagl" path="res://UI/red_button00.png" id="4_a3o1b"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3t3k2"]
+texture = ExtResource("2_82wn5")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_21hsw"]
+texture = ExtResource("3_ssdfo")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3qxyo"]
+texture = ExtResource("4_a3o1b")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2lga4"]
+texture = ExtResource("2_blssu")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[resource]
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 20
+Button/font_sizes/font_size = 24
+Button/fonts/font = ExtResource("1_xltjr")
+Button/styles/hover = SubResource("StyleBoxTexture_3t3k2")
+Button/styles/normal = SubResource("StyleBoxTexture_21hsw")
+Button/styles/pressed = SubResource("StyleBoxTexture_3qxyo")
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/line_spacing = 3
+Label/constants/outline_size = 20
+Label/font_sizes/font_size = 24
+Label/fonts/font = ExtResource("1_xltjr")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_2lga4")

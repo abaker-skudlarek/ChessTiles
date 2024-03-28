@@ -18,8 +18,7 @@ enum GameState {
 	SLIDE_MOVE,
 	CHESS_MOVE,
 	MERGING,
-	WIN,
-	LOSE
+	GAME_OVER
 }
 
 # NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
@@ -94,10 +93,8 @@ func change_state(new_state: GameState) -> void:
 			SignalBus.emit_signal("state_changed_chess_move")
 		GameState.MERGING:
 			SignalBus.emit_signal("state_changed_merging")
-		GameState.WIN:
-			SignalBus.emit_signal("state_changed_win")
-		GameState.LOSE:
-			SignalBus.emit_signal("state_changed_lose")
+		GameState.GAME_OVER:
+			SignalBus.emit_signal("state_changed_game_over")
 
 # ------------------------------------------------------------------------------------------------ #
 
