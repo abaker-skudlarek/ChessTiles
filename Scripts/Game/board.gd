@@ -49,58 +49,70 @@ func _enter_tree() -> void:
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
 func _process_slide_move(direction_to_move: Vector2) -> void:
 
-	var slide_moves_performed: int = 0
-	
-	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
-	
-	# Reset the move overlays when performing a slide move
-	_remove_move_overlays()
-	
-	# TODO: REWRITE THIS TO BE MORE READABLE. Don't worry too much about efficiency, it's a small board
-	# Based on the direction to move, for each square, check if it's occupied. If it is, perform a slide 
-	# move for the piece in that square.
-	if direction_to_move == Vector2.RIGHT:
-		for i in range(_board.size() - 1, -1, -1):
-			for j: int in _board[i].size():
-				var current_grid_location := Vector2(i, j)
-				if (
-					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
-					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
-				):
-					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
-													 current_grid_location.y + direction_to_move.y)
-					if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
-	elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
-		for i: int in _board.size():
-			for j: int in _board[i].size():
-				var current_grid_location := Vector2(i, j)
-				if (
-					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
-					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
-				):
-					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
-													 current_grid_location.y + direction_to_move.y)
-					if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
-	elif direction_to_move == Vector2.DOWN:
-		for i in _board.size():
-			for j in range(_board[i].size() - 1, -1, -1):
-				var current_grid_location := Vector2(i, j)
-				if (
-					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
-					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
-				):
-					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
-													 current_grid_location.y + direction_to_move.y)
-					if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+	# Only move if we are waiting for user input
+	if GameManager.get_current_game_state() == GameManager.GameState.WAITING_USER_INPUT:
 
-	# If we performed at least 1 slide move, emit the signal
-	if slide_moves_performed > 0:
-		SignalBus.emit_signal("slide_move_finished")
+		GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
 
-	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
+		var slide_moves_performed: int = 0
+		
+		# Reset the move overlays when performing a slide move
+		_remove_move_overlays()
+		
+		# TODO: REWRITE THIS TO BE MORE READABLE. Don't worry too much about efficiency, it's a small board
+		# Based on the direction to move, for each square, check if it's occupied. If it is, perform a slide 
+		# move for the piece in that square.
+		if direction_to_move == Vector2.RIGHT:
+			for i in range(_board.size() - 1, -1, -1):
+				for j: int in _board[i].size():
+					var current_grid_location := Vector2(i, j)
+					# Check that the location we are looking at is occupied by a piece
+					if (
+						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
+						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
+					):
+						var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
+														current_grid_location.y + direction_to_move.y)
+						# Check that the new location we want to move to is in bounds
+						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
+							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+
+		elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
+			for i: int in _board.size():
+				for j: int in _board[i].size():
+					var current_grid_location := Vector2(i, j)
+					# Check that the location we are looking at is occupied by a piece
+					if (
+						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
+						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
+					):
+						var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
+														current_grid_location.y + direction_to_move.y)
+						# Check that the new location we want to move to is in bounds
+						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
+							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+		elif direction_to_move == Vector2.DOWN:
+			for i in _board.size():
+				for j in range(_board[i].size() - 1, -1, -1):
+					var current_grid_location := Vector2(i, j)
+					# Check that the location we are looking at is occupied by a piece
+					if (
+						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
+						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
+					):
+						var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
+														current_grid_location.y + direction_to_move.y)
+						# Check that the new location we want to move to is in bounds
+						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
+							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+
+		if slide_moves_performed > 0:
+			SignalBus.emit_signal("slide_move_finished")
+
+		if _is_game_over():
+			GameManager.change_state(GameManager.GameState.GAME_OVER)
+		else:
+			GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -144,7 +156,7 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		# If the pieces don't have the same name, we can't merge them, so don't move and simply return 0
 		else:
 			return 0
-	
+
 	# If we've gotten here, then the piece we are trying to slide move is not allowed to slide move, either because 
 	# it's two enemy pieces (enemy piece merging is not allowed), or because they are two opposing pieces (piece 
 	# capturing during a slide move is not allowed)
@@ -192,9 +204,10 @@ func _spawn_pieces_at_random_locations(pieces_to_spawn: Array) -> void:
 
 	# Get the amount of empty spaces on the board defined by num_pieces_to_spawn. Each empty space is a Vector2()
 	var empty_spaces: Array = _get_random_empty_board_spaces(pieces_to_spawn.size())
-	
-	# For each empty space, spawn the next piece at that location. We are iterating through the empty spaces
-	# so that we never try to spawn more pieces than we have open spaces for. 
+
+	# For each empty space that's available, spawn a piece at that location
+	# NOTE: The reason we are iterating over empty_spaces instead of pieces_to_spawn is because we don't want to try to
+	# 		spawn more pieces than we have empty spaces for
 	for i in empty_spaces.size():
 		var grid_location: Vector2 = _pixel_to_grid(Vector2(empty_spaces[i].x, empty_spaces[i].y))
 		_spawn_piece_at_grid_location(grid_location, pieces_to_spawn[i])
@@ -298,6 +311,65 @@ func _pixel_to_grid(pixel_location: Vector2) -> Vector2:
 	
 # ------------------------------------------------------------------------------------------------ #
 
+## Simple helper function that retrieves the piece name at the board's grid location that is passed 
+## in. If there is no piece at the location, returns the string "NO PIECE AT GRID LOCATION"
+func _get_piece_name_at_grid_location(grid_location: Vector2) -> String:
+
+	var grid_location_contents: Node = _board[grid_location.x][grid_location.y]
+
+	# If the contents are null, there is no piece at the location
+	if grid_location_contents == null:
+		return "NO PIECE AT GRID LOCATION"
+
+	print("piece_name: ", grid_location_contents.piece_name)
+
+	# If we have gotten here, we know there is a piece at the location, so return its name
+	return grid_location_contents.piece_name
+
+# ------------------------------------------------------------------------------------------------ # 
+
+## Simple helper function that retrieves the piece's family at the board's grid location that is passed 
+## in. If there is no piece at the location, returns the string "NO PIECE AT GRID LOCATION"
+func _get_piece_family_at_grid_location(grid_location: Vector2) -> String:
+
+	var grid_location_contents: Node = _board[grid_location.x][grid_location.y]
+
+	# If the contents are null, there is no piece at the location
+	if grid_location_contents == null:
+		return "NO PIECE AT GRID LOCATION"
+
+	print("piece_family: ", grid_location_contents.piece_family)
+
+	# If we have gotten here, we know there is a piece at the location, so return its family
+	return grid_location_contents.piece_family
+
+# ------------------------------------------------------------------------------------------------ # 
+
+# TODO: Use this function in all other places where we have to check if two pieces can merge
+## Simple helper function that checks if the two pieces at each grid location can merge with each other.
+func _can_merge(piece_a_grid_location: Vector2, piece_b_grid_location: Vector2) -> bool:
+	print("piece_a_grid_location: ", piece_a_grid_location)
+	print("piece_b_grid_location: ", piece_b_grid_location)
+
+	# TODO: For now, we only want to allow player pieces to merge, so if either piece isn't a player piece, we can't merge
+	if (
+		_get_piece_family_at_grid_location(piece_a_grid_location) != GameManager.PLAYER_FAMILY or 
+		_get_piece_family_at_grid_location(piece_b_grid_location) != GameManager.PLAYER_FAMILY
+	):
+		print("at least one piece isn't a player piece")
+		return false
+
+	# We know the pieces are both player pieces, so check that their names are equal. If they are, they can merge
+	if (_get_piece_name_at_grid_location(piece_a_grid_location) == _get_piece_name_at_grid_location(piece_b_grid_location)):
+		print("piece names are equal")
+		return true
+	
+	# If we have gotten here, return false. The pieces are not player pieces or they don't have the same name
+	print("bottom of function")
+	return false
+
+# ------------------------------------------------------------------------------------------------ # 
+
 ## Helper function that moves a piece from location_a to location_b, assuming that location_b is empty
 func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
 
@@ -374,6 +446,94 @@ func _set_last_clicked_piece(piece_pixel_location: Vector2) -> void:
 	var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
 	_last_clicked_piece = _board[piece_grid_location.x][piece_grid_location.y]
 
+# ------------------------------------------------------------------------------------------------ #
+
+## Runner function that checks if the game is over. 
+## Returns true if it is, meaning there are no valid slide moves NOR chess moves.
+## Returns false if it isn't, meaning there is at least one valid slide more OR chess move
+func _is_game_over() -> bool:
+
+	# If there is at least one empty space, the game cannot be over yet
+	if _get_random_empty_board_spaces(1) != []:
+		print("one empty space")
+		return false
+
+	# If there are valid horizontal slide moves, return false, the game isn't over yet
+	if _check_valid_horizontal_slide_moves() == true:
+		print("valid horizontal slide move")
+		return false
+
+	# If there are valid vertical slide moves, return false, the game isn't over yet
+	if _check_valid_vertical_slide_moves() == true:
+		print("valid vertical slide move")
+		return false
+
+	# If there are any valid chess moves, return false, the game isn't over yet
+	if _check_valid_chess_moves() == true:
+		print("valid chess move")
+		return false	
+
+	# If we have gotten here, the game is over
+	print("game is over, returning true")
+	return true
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Checks if there are any valid slide moves in the horizontal direction. Returns true if so, false otherwise
+func _check_valid_horizontal_slide_moves() -> bool:
+
+	for i in GRID_WIDTH - 1:
+		for j in GRID_HEIGHT:
+			# If the pieces at the two locations can merge, return true
+			if _can_merge(Vector2(i, j), Vector2(i + 1, j)):
+				return true
+
+	# If we have gotten here, we know there are no valid moves, so return false
+	return false
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Checks if there are any valid slide moves in the vertical direction. Returns true if so, false otherwise
+func _check_valid_vertical_slide_moves() -> bool:
+
+	for i in GRID_WIDTH:
+		for j in GRID_HEIGHT - 1:
+			# If the pieces at the two locations can merge, return true
+			if _can_merge(Vector2(i, j), Vector2(i, j + 1)):
+				return true
+
+	# If we have gotten here, we know there are no valid moves, so return false
+	return false
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Checks if there are any chess moves on the board. Returns true if so, false otherwise 
+func _check_valid_chess_moves() -> bool:
+
+	# If a chess move isn't allowed, there are no valid chess moves
+	if !GameManager.is_chess_move_allowed():
+		return false
+
+	# Iterate through each space and check if there are valid chess moves for any pieces
+	for i in GRID_WIDTH:
+		for j in GRID_HEIGHT:
+			# If the location is occupied by a player piece, have it calculate it's possible moves. 
+			if _is_location_occupied(Vector2(i, j)) == GameManager.BoardLocationStates.OCCUPIED_PLAYER:
+				var piece_at_grid_location: Node = _board[i][j]
+				var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, Vector2(i, j), GRID_WIDTH, GRID_HEIGHT)
+				# If either of the possible moves arrays that are returned isn't empty, there is at least one possible
+				# chess move, so return true
+				if (
+					possible_moves["empty_spaces"] != [] or
+					possible_moves["enemy_spaces"] != []
+				):
+					return true
+
+	# If we have gotten here, we know there are no valid chess moves, so return false
+	return false
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Signal Functions -- #
 # ------------------------------------------------------------------------------------------------ #
 
 ## Perform functions that need to occur at the start of the game

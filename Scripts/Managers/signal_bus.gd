@@ -8,8 +8,7 @@ signal state_changed_waiting_user_input
 signal state_changed_slide_move
 signal state_changed_chess_move
 signal state_changed_merging
-signal state_changed_win
-signal state_changed_lose
+signal state_changed_game_over
 signal chess_moves_remaining_updated(num_moves: int)
 
 # ------------------------------------------------------------------------------------------------ #
