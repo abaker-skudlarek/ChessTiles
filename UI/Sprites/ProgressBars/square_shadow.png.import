@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://boyp6pprou8io"
-path="res://.godot/imported/grey_panel.png-f8a525e23143d17335ac70d3ca5bb9e4.ctex"
+uid="uid://bnv10rdjqahgp"
+path="res://.godot/imported/square_shadow.png-24b6bf7d210c400341df87dc7f17ffdb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UI/grey_panel.png"
-dest_files=["res://.godot/imported/grey_panel.png-f8a525e23143d17335ac70d3ca5bb9e4.ctex"]
+source_file="res://UI/Sprites/ProgressBars/square_shadow.png"
+dest_files=["res://.godot/imported/square_shadow.png-24b6bf7d210c400341df87dc7f17ffdb.ctex"]
 
 [params]
 

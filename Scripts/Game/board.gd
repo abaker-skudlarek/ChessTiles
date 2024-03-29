@@ -190,10 +190,12 @@ func _chess_move_piece_to_enemy_square(desired_pixel_location: Vector2) -> void:
 
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
 	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
+	var piece_at_desired_grid_location: String = _get_piece_name_at_grid_location(desired_grid_location) 
 	
 	_move_and_take_piece_from_location_a_to_location_b(last_clicked_piece_grid_location, desired_grid_location)
 
 	SignalBus.emit_signal("chess_move_finished")
+	SignalBus.emit_signal("piece_taken", piece_at_desired_grid_location)
 	
 # ------------------------------------------------------------------------------------------------ #
 
@@ -321,8 +323,6 @@ func _get_piece_name_at_grid_location(grid_location: Vector2) -> String:
 	if grid_location_contents == null:
 		return "NO PIECE AT GRID LOCATION"
 
-	print("piece_name: ", grid_location_contents.piece_name)
-
 	# If we have gotten here, we know there is a piece at the location, so return its name
 	return grid_location_contents.piece_name
 
@@ -338,8 +338,6 @@ func _get_piece_family_at_grid_location(grid_location: Vector2) -> String:
 	if grid_location_contents == null:
 		return "NO PIECE AT GRID LOCATION"
 
-	print("piece_family: ", grid_location_contents.piece_family)
-
 	# If we have gotten here, we know there is a piece at the location, so return its family
 	return grid_location_contents.piece_family
 
@@ -348,24 +346,19 @@ func _get_piece_family_at_grid_location(grid_location: Vector2) -> String:
 # TODO: Use this function in all other places where we have to check if two pieces can merge
 ## Simple helper function that checks if the two pieces at each grid location can merge with each other.
 func _can_merge(piece_a_grid_location: Vector2, piece_b_grid_location: Vector2) -> bool:
-	print("piece_a_grid_location: ", piece_a_grid_location)
-	print("piece_b_grid_location: ", piece_b_grid_location)
 
-	# TODO: For now, we only want to allow player pieces to merge, so if either piece isn't a player piece, we can't merge
+	# Only player pieces can merge, so if either piece isn't a player piece, we can't merge
 	if (
 		_get_piece_family_at_grid_location(piece_a_grid_location) != GameManager.PLAYER_FAMILY or 
 		_get_piece_family_at_grid_location(piece_b_grid_location) != GameManager.PLAYER_FAMILY
 	):
-		print("at least one piece isn't a player piece")
 		return false
 
 	# We know the pieces are both player pieces, so check that their names are equal. If they are, they can merge
 	if (_get_piece_name_at_grid_location(piece_a_grid_location) == _get_piece_name_at_grid_location(piece_b_grid_location)):
-		print("piece names are equal")
 		return true
 	
 	# If we have gotten here, return false. The pieces are not player pieces or they don't have the same name
-	print("bottom of function")
 	return false
 
 # ------------------------------------------------------------------------------------------------ # 
@@ -389,7 +382,7 @@ func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, g
 ## This function assumes that we have already checked that the two pieces are valid to merge into
 ## each other. That needs to be done somewhere before this function is called in the calling code.
 func _move_and_merge_piece_from_location_a_to_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
-
+	print("move and merge piece")
 	var piece_at_grid_location_a: Node = _board[grid_location_a.x][grid_location_a.y]
 	var piece_at_grid_location_b: Node = _board[grid_location_b.x][grid_location_b.y]
 
@@ -408,6 +401,8 @@ func _move_and_merge_piece_from_location_a_to_location_b(grid_location_a: Vector
 	# Delete the pieces that are merging
 	piece_at_grid_location_a.queue_free()
 	piece_at_grid_location_b.queue_free()
+
+	SignalBus.emit_signal("pieces_merged")
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -455,26 +450,21 @@ func _is_game_over() -> bool:
 
 	# If there is at least one empty space, the game cannot be over yet
 	if _get_random_empty_board_spaces(1) != []:
-		print("one empty space")
 		return false
 
 	# If there are valid horizontal slide moves, return false, the game isn't over yet
 	if _check_valid_horizontal_slide_moves() == true:
-		print("valid horizontal slide move")
 		return false
 
 	# If there are valid vertical slide moves, return false, the game isn't over yet
 	if _check_valid_vertical_slide_moves() == true:
-		print("valid vertical slide move")
 		return false
 
 	# If there are any valid chess moves, return false, the game isn't over yet
 	if _check_valid_chess_moves() == true:
-		print("valid chess move")
 		return false	
 
 	# If we have gotten here, the game is over
-	print("game is over, returning true")
 	return true
 
 # ------------------------------------------------------------------------------------------------ #

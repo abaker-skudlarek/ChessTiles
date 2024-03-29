@@ -10,8 +10,6 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-# TODO: I'm not actually sure if we need these GameStates. Does a state machine matter in this case? I'm 
-# 		not using it all the time, so may not actually be needed.
 enum GameState {
 	START_GAME,
 	WAITING_USER_INPUT,
@@ -49,6 +47,7 @@ func _ready() -> void:
 	SignalBus.connect("game_initialized", _on_game_initialized)
 	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
 	SignalBus.connect("chess_move_finished", _on_chess_move_finished)
+	SignalBus.connect("chess_move_gained", _on_chess_move_gained)
 
 	# TODO: This will be moved somewhere else once we get a title screen. When "start game" is pressed, 
 	# 		the state will be changed
@@ -64,6 +63,12 @@ func _on_slide_move_finished() -> void:
 func _on_chess_move_finished() -> void:
 	_chess_move_counter += 1
 	_chess_moves_remaining -= 1
+	SignalBus.emit_signal("chess_moves_remaining_updated", _chess_moves_remaining)
+	
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_chess_move_gained() -> void:
+	_chess_moves_remaining += 1
 	SignalBus.emit_signal("chess_moves_remaining_updated", _chess_moves_remaining)
 	
 # ------------------------------------------------------------------------------------------------ #

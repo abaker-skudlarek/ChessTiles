@@ -25,6 +25,8 @@ signal slide_move_down
 signal game_initialized
 signal slide_move_finished
 signal chess_move_finished
+signal pieces_merged
+signal piece_taken(taken_piece_name: String)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Piece Signals -- #
@@ -37,3 +39,8 @@ signal enemy_piece_clicked(piece_pixel_position: Vector2, piece_name: String)
 # ------------------------------------------------------------------------------------------------ #
 signal empty_move_overlay_clicked(overlay_pixel_position: Vector2)
 signal enemy_move_overlay_clicked(overlay_pixel_position: Vector2)
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Charge Bar Signals -- #
+# ------------------------------------------------------------------------------------------------ #
+signal chess_move_gained

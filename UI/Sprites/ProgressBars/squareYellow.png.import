@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5q30dai4vwdv"
-path="res://.godot/imported/green_button02.png-b16f26f338df1221e80a59d0a02cdff0.ctex"
+uid="uid://cku6rk7hja4mo"
+path="res://.godot/imported/squareYellow.png-78adf4a59c227e3959c46b251d017c4a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UI/green_button02.png"
-dest_files=["res://.godot/imported/green_button02.png-b16f26f338df1221e80a59d0a02cdff0.ctex"]
+source_file="res://UI/Sprites/ProgressBars/squareYellow.png"
+dest_files=["res://.godot/imported/squareYellow.png-78adf4a59c227e3959c46b251d017c4a.ctex"]
 
 [params]
 
