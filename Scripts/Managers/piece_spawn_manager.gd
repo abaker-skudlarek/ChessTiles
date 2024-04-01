@@ -23,19 +23,16 @@ var _player_piece_spawn_rates: Dictionary = {
 }
 
 # Defines the chances for each enemy piece to spawn. The number is the percentage chance.
-# TODO: Currently, only enemy pawns can spawn, no other pieces. Not sure if we'll change that some
-# 		day or not. If we did, we'd probably want to figure out some way to punish the player for 
-# 		allowing higher value enemy pieces to stay on the board
 var _enemy_piece_spawn_rates: Dictionary = {
-	"enemy_pawn": 100,
-	"enemy_bishop": 0,
-	"enemy_knight": 0,
-	"enemy_rook": 0,
-	"enemy_queen": 0,
-	"enemy_king": 0
+	"enemy_pawn": 30,
+	"enemy_bishop": 25,
+	"enemy_knight": 25,
+	"enemy_rook": 10,
+	"enemy_queen": 7,
+	"enemy_king": 3
 }
 
-var _base_enemy_piece_spawn_chance: int = 30  # 30% chance to spawn an enemy piece, at base. Some effects may change this number to make it more likely
+var _base_enemy_piece_spawn_chance: int = 30  # 30% chance to spawn an enemy piece, at base. 
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
