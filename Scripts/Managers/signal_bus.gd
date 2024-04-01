@@ -43,4 +43,4 @@ signal enemy_move_overlay_clicked(overlay_pixel_position: Vector2)
 # ------------------------------------------------------------------------------------------------ #
 # -- Charge Bar Signals -- #
 # ------------------------------------------------------------------------------------------------ #
-signal chess_move_gained
+signal chess_move_gained(num_moves_gained: int)

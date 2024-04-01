@@ -382,7 +382,6 @@ func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, g
 ## This function assumes that we have already checked that the two pieces are valid to merge into
 ## each other. That needs to be done somewhere before this function is called in the calling code.
 func _move_and_merge_piece_from_location_a_to_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
-	print("move and merge piece")
 	var piece_at_grid_location_a: Node = _board[grid_location_a.x][grid_location_a.y]
 	var piece_at_grid_location_b: Node = _board[grid_location_b.x][grid_location_b.y]
 

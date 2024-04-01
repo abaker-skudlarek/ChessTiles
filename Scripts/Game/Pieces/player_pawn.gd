@@ -72,18 +72,14 @@ func calculate_possible_moves(board: Array, current_grid_location: Vector2, boar
 
 			# If the location has a player piece on it, this isn't a possible move
 			if location_status == GameManager.BoardLocationStates.OCCUPIED_PLAYER:
-				print("location occupied by player")
 				continue
 			# If the location has an enemy piece on it, this isn't a possible move
 			elif location_status == GameManager.BoardLocationStates.OCCUPIED_ENEMY:
-				print("location occupied by enemy")
 				possible_moves["enemy_spaces"].append(possible_move_location)
 			# If the location doesn't have a piece on it, this is not a possible move
 			elif location_status == GameManager.BoardLocationStates.NOT_OCCUPIED:
-				print("location not occupied")
 				continue
 			elif location_status == GameManager.BoardLocationStates.ERROR:
-				print("location error")
 				printerr("!!! BoardLocationState is ERROR. Something bad happened !!!")
 
 	return possible_moves
