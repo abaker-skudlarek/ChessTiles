@@ -29,7 +29,6 @@ var _last_clicked_piece: Node 		 # The last piece that was clicked, needed to kn
 # 		because then GameManager will emit the signal whenever that is hit, instead of in it's _ready()
 # 		function
 func _enter_tree() -> void:
-
 	SignalBus.connect("state_changed_start_game", _on_state_changed_start_game)
 	SignalBus.connect("slide_move_left", _on_slide_move_left)
 	SignalBus.connect("slide_move_right", _on_slide_move_right)
@@ -110,7 +109,8 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 			SignalBus.emit_signal("slide_move_finished")
 
 		if _is_game_over():
-			GameManager.change_state(GameManager.GameState.GAME_OVER)
+			var signal_arguments: Dictionary = { final_board = _board.duplicate() }
+			GameManager.change_state(GameManager.GameState.SCORING, signal_arguments)
 		else:
 			GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
@@ -120,7 +120,6 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 ## Returns 1 if the slide move was performed, 0 if not. Not using bools because the calling code wants
 ## to know how many slide moves are performed
 func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_location: Vector2) -> int:
-
 	var piece_at_current_location: Node = _board[current_piece_grid_location.x][current_piece_grid_location.y]
 	var piece_at_new_location: Node = _board[new_piece_grid_location.x][new_piece_grid_location.y]
 
@@ -249,7 +248,6 @@ func _spawn_move_overlays(desired_overlay_locations: Dictionary) -> void:
 
 ## Removes all shown move overlays from the board and resets the array that keeps track of them
 func _remove_move_overlays() -> void:
-
 	for i in _shown_move_overlays.size():
 		_shown_move_overlays[i].queue_free()
 	_shown_move_overlays = []
@@ -258,7 +256,6 @@ func _remove_move_overlays() -> void:
 
 ## Generate the board background by creating a grid of alternating sprites
 func _generate_board_background() -> void:
-
 	for i in GRID_WIDTH:
 		for j in GRID_HEIGHT:	
 			var sprite := Sprite2D.new()
@@ -316,7 +313,6 @@ func _pixel_to_grid(pixel_location: Vector2) -> Vector2:
 ## Simple helper function that retrieves the piece name at the board's grid location that is passed 
 ## in. If there is no piece at the location, returns the string "NO PIECE AT GRID LOCATION"
 func _get_piece_name_at_grid_location(grid_location: Vector2) -> String:
-
 	var grid_location_contents: Node = _board[grid_location.x][grid_location.y]
 
 	# If the contents are null, there is no piece at the location
@@ -331,7 +327,6 @@ func _get_piece_name_at_grid_location(grid_location: Vector2) -> String:
 ## Simple helper function that retrieves the piece's family at the board's grid location that is passed 
 ## in. If there is no piece at the location, returns the string "NO PIECE AT GRID LOCATION"
 func _get_piece_family_at_grid_location(grid_location: Vector2) -> String:
-
 	var grid_location_contents: Node = _board[grid_location.x][grid_location.y]
 
 	# If the contents are null, there is no piece at the location
@@ -365,7 +360,6 @@ func _can_merge(piece_a_grid_location: Vector2, piece_b_grid_location: Vector2) 
 
 ## Helper function that moves a piece from location_a to location_b, assuming that location_b is empty
 func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, grid_location_b: Vector2) -> void:
-
 	var piece_to_move: Node = _board[grid_location_a.x][grid_location_a.y]
 
 	_board[grid_location_a.x][grid_location_a.y] = null
@@ -470,7 +464,6 @@ func _is_game_over() -> bool:
 
 ## Checks if there are any valid slide moves in the horizontal direction. Returns true if so, false otherwise
 func _check_valid_horizontal_slide_moves() -> bool:
-
 	for i in GRID_WIDTH - 1:
 		for j in GRID_HEIGHT:
 			# If the pieces at the two locations can merge, return true
@@ -484,7 +477,6 @@ func _check_valid_horizontal_slide_moves() -> bool:
 
 ## Checks if there are any valid slide moves in the vertical direction. Returns true if so, false otherwise
 func _check_valid_vertical_slide_moves() -> bool:
-
 	for i in GRID_WIDTH:
 		for j in GRID_HEIGHT - 1:
 			# If the pieces at the two locations can merge, return true
