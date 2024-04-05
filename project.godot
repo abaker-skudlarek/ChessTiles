@@ -21,6 +21,7 @@ ResourceManager="*res://Scripts/Managers/resource_manager.gd"
 GameManager="*res://Scripts/Managers/game_manager.gd"
 InputManager="*res://Scripts/Managers/input_manager.gd"
 PieceSpawnManager="*res://Scripts/Managers/piece_spawn_manager.gd"
+EndGameScorer="*res://Scripts/Managers/end_game_scorer.gd"
 
 [debug]
 

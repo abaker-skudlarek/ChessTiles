@@ -16,7 +16,8 @@ enum GameState {
 	SLIDE_MOVE,
 	CHESS_MOVE,
 	MERGING,
-	GAME_OVER
+	SCORING,
+	GAME_OVER,
 }
 
 # NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
@@ -24,7 +25,7 @@ enum BoardLocationStates {
 	OCCUPIED_PLAYER,  # Board location is occupied by a player piece
 	OCCUPIED_ENEMY,   # Board location is occupied by an enemy piece
 	NOT_OCCUPIED,     # Board location is not occupied
-	ERROR			  # Default state
+	ERROR,			  # Default state
 }
 
 const INITIAL_CHESS_MOVES: int = 5
@@ -84,7 +85,7 @@ func _on_game_initialized() -> void:
 ## Used to change the current state of the game. When called, the state will be changed to the passed
 ## in state, the appropriate signal will be emitted, and then any code that GameManager needs to run 
 ## for that state will be executed.
-func change_state(new_state: GameState) -> void:
+func change_state(new_state: GameState, signal_arguments: Dictionary = {}) -> void:
 	_current_state = new_state
 
 	match _current_state:
@@ -98,6 +99,8 @@ func change_state(new_state: GameState) -> void:
 			SignalBus.emit_signal("state_changed_chess_move")
 		GameState.MERGING:
 			SignalBus.emit_signal("state_changed_merging")
+		GameState.SCORING:
+			SignalBus.emit_signal("state_changed_scoring", signal_arguments)
 		GameState.GAME_OVER:
 			SignalBus.emit_signal("state_changed_game_over")
 
