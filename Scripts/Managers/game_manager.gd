@@ -17,7 +17,6 @@ enum GameState {
 	CHESS_MOVE,
 	MERGING,
 	SCORING,
-	ANIMATING,
 	GAME_OVER,
 }
 
