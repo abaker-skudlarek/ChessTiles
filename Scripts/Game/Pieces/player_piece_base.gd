@@ -58,3 +58,12 @@ func _is_location_in_bounds(grid_location: Vector2, board_width: int, board_heig
 func calculate_possible_moves(_board: Array, _current_grid_location: Vector2, _board_width: int, _board_height: int) -> Dictionary:
 	printerr("!!! BASE CLASS FUNCTION CALLED: calculate_possible_moves() in PlayerPieceBase !!!")
 	return {}
+
+# ------------------------------------------------------------------------------------------------ #
+
+func score_piece() -> void:
+	# TODO: need to wait for the animation to finish, before we return
+	$Sprite2D/AnimationPlayer.play("score_piece")
+	await $Sprite2D/AnimationPlayer.animation_finished
+
+# ------------------------------------------------------------------------------------------------ #

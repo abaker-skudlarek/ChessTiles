@@ -17,6 +17,7 @@ enum GameState {
 	CHESS_MOVE,
 	MERGING,
 	SCORING,
+	ANIMATING,
 	GAME_OVER,
 }
 
@@ -28,7 +29,7 @@ enum BoardLocationStates {
 	ERROR,			  # Default state
 }
 
-const INITIAL_CHESS_MOVES: int = 5
+const INITIAL_CHESS_MOVES: int = 0 # 5
 # NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
 const PLAYER_FAMILY: String = "player"
 const ENEMY_FAMILY: String = "enemy"

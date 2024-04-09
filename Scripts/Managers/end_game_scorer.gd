@@ -40,11 +40,13 @@ func _score_game(signal_arguments: Dictionary) -> void:
 	
 	for i in _final_board.size():
 		for j: int in _final_board[i].size():
+			var piece: Node = _final_board[i][j]
 			print("-------------------")
-			print("piece_name: ", _final_board[i][j].piece_name)
-			print("piece_score: ", _piece_values[_final_board[i][j].piece_name])
-			_total_score += _piece_values[_final_board[i][j].piece_name]
+			print("piece_name: ", piece.piece_name)
+			print("piece_score: ", _piece_values[piece.piece_name])
+			_total_score += _piece_values[piece.piece_name]
 			print("_total_score: ", _total_score)
+			piece.score_piece()
 
 	print("_total score: ", _total_score)
 
