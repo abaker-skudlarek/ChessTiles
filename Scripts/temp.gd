@@ -1,8 +1,9 @@
 extends Node
 
 func _init() -> void:
-	var a := Vector2(1, 1)
-	var b := Vector2(-1, 0)
-	
-	print(a + a)
-	print(a + b)
+	wait()
+
+func wait() -> void:
+	print("waiting")
+	await get_tree().create_timer(10.0).timeout
+	print("done waiting")

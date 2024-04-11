@@ -40,13 +40,18 @@ func _score_game(signal_arguments: Dictionary) -> void:
 	
 	for i in _final_board.size():
 		for j: int in _final_board[i].size():
-			var piece: Node = _final_board[i][j]
+			var piece: Node = _final_board[j][i]
 			print("-------------------")
 			print("piece_name: ", piece.piece_name)
 			print("piece_score: ", _piece_values[piece.piece_name])
 			_total_score += _piece_values[piece.piece_name]
 			print("_total_score: ", _total_score)
-			piece.score_piece()
+
+			# TODO: THIS WORKS! Need to figure out how to make sure the current piece we are tweening is on top of all other pieces
+			var tween := create_tween()
+			tween.tween_property(piece, "position:y", -100, .15).set_trans(Tween.TRANS_CUBIC).as_relative()
+			tween.tween_property(piece, "position:y", 100, .15).set_trans(Tween.TRANS_CUBIC).as_relative()
+			await tween.finished
 
 	print("_total score: ", _total_score)
 
