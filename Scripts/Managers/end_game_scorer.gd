@@ -34,20 +34,19 @@ func _score_game(signal_arguments: Dictionary) -> void:
 	print("scoring game")
 
 	var _final_board: Array = signal_arguments.final_board
-
-	print("_final_board in score_game:")
-	print(_final_board)
 	
 	for i in _final_board.size():
 		for j: int in _final_board[i].size():
 			var piece: Node = _final_board[j][i]
+
+			_total_score += _piece_values[piece.piece_name]
 			print("-------------------")
 			print("piece_name: ", piece.piece_name)
 			print("piece_score: ", _piece_values[piece.piece_name])
-			_total_score += _piece_values[piece.piece_name]
 			print("_total_score: ", _total_score)
 
-			_tween_scoring_piece(piece)
+			# Animate the piece that we are scoring 
+			await _tween_scoring_piece(piece)
 
 	print("_total score: ", _total_score)
 
