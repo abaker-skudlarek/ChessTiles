@@ -47,11 +47,20 @@ func _score_game(signal_arguments: Dictionary) -> void:
 			_total_score += _piece_values[piece.piece_name]
 			print("_total_score: ", _total_score)
 
-			# TODO: THIS WORKS! Need to figure out how to make sure the current piece we are tweening is on top of all other pieces
+			# TODO: This is probably not the way to do this, but it works. Basically, just setting the Z index super
+			# 		high for the piece that we are going to tween, so that it's guaranteed to be in front of the
+			# 		other pieces. Again, probably a much better way to do this, but it works.
+			var original_z_index: int = piece.z_index
+			piece.z_index = 100
+
 			var tween := create_tween()
 			tween.tween_property(piece, "position:y", -100, .15).set_trans(Tween.TRANS_CUBIC).as_relative()
 			tween.tween_property(piece, "position:y", 100, .15).set_trans(Tween.TRANS_CUBIC).as_relative()
 			await tween.finished
+
+			# TODO: Again, probably not the best way to do this. But we want to set the z_index back to it's
+			# 		original value
+			piece.z_index = original_z_index
 
 	print("_total score: ", _total_score)
 
