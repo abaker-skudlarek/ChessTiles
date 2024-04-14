@@ -36,8 +36,6 @@ func _score_game(signal_arguments: Dictionary) -> void:
 	# Score each piece on the board
 	for i in _final_board.size():
 		for j: int in _final_board[i].size():
-			
-			await get_tree().create_timer(0.2).timeout
 
 			var piece: Node = _final_board[j][i]
 			_total_score += _piece_values[piece.piece_name]
