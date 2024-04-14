@@ -32,7 +32,7 @@ texture_margin_bottom = 24.0
 
 [resource]
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
-Button/constants/outline_size = 20
+Button/constants/outline_size = 12
 Button/font_sizes/font_size = 24
 Button/fonts/font = ExtResource("1_xltjr")
 Button/styles/hover = SubResource("StyleBoxTexture_3t3k2")
@@ -40,7 +40,7 @@ Button/styles/normal = SubResource("StyleBoxTexture_21hsw")
 Button/styles/pressed = SubResource("StyleBoxTexture_3qxyo")
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/constants/line_spacing = 3
-Label/constants/outline_size = 20
+Label/constants/outline_size = 12
 Label/font_sizes/font_size = 24
 Label/fonts/font = ExtResource("1_xltjr")
 PanelContainer/styles/panel = SubResource("StyleBoxTexture_2lga4")

@@ -12,7 +12,6 @@ func _enter_tree() -> void:
 
 func _on_state_changed_game_over() -> void:
 	visible = true
-	print("Enabled game over UI!")
 
 # ------------------------------------------------------------------------------------------------ #
 
