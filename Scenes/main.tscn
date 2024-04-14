@@ -1,10 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://d6cphvklilml"]
+[gd_scene load_steps=4 format=3 uid="uid://d6cphvklilml"]
 
 [ext_resource type="PackedScene" uid="uid://mj0ipvmp8igw" path="res://Scenes/UI/hud.tscn" id="1_nm1hi"]
 [ext_resource type="PackedScene" uid="uid://6w14jlhqkap5" path="res://Scenes/Board/board.tscn" id="2_bpxrd"]
+[ext_resource type="PackedScene" uid="uid://de32mbaaspe1p" path="res://Scenes/UI/end_game_scorer_ui.tscn" id="3_xyjwr"]
 
 [node name="Main" type="Node"]
 
 [node name="HUD" parent="." instance=ExtResource("1_nm1hi")]
+
+[node name="EndGameScorerUI" parent="." instance=ExtResource("3_xyjwr")]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = 145.0
+offset_right = 150.0
+offset_bottom = 316.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Board" parent="." instance=ExtResource("2_bpxrd")]

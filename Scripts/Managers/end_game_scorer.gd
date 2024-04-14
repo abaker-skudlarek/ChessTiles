@@ -31,24 +31,20 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _score_game(signal_arguments: Dictionary) -> void:
-	print("scoring game")
-
 	var _final_board: Array = signal_arguments.final_board
-	
+
+	# Score each piece on the board
 	for i in _final_board.size():
 		for j: int in _final_board[i].size():
+			
+			await get_tree().create_timer(0.2).timeout
+
 			var piece: Node = _final_board[j][i]
-
 			_total_score += _piece_values[piece.piece_name]
-			print("-------------------")
-			print("piece_name: ", piece.piece_name)
-			print("piece_score: ", _piece_values[piece.piece_name])
-			print("_total_score: ", _total_score)
 
-			# Animate the piece that we are scoring 
+			SignalBus.emit_signal("piece_scored", _piece_values[piece.piece_name])
+
 			await _tween_scoring_piece(piece)
-
-	print("_total score: ", _total_score)
 
 	SignalBus.emit_signal("end_game_score_calculated", _total_score)
 
@@ -57,24 +53,28 @@ func _score_game(signal_arguments: Dictionary) -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _tween_scoring_piece(piece: Node) -> void:
-	# TODO: This is probably not the way to do this, but it works. Basically, just setting the Z index super
-	# 		high for the piece that we are going to tween, so that it's guaranteed to be in front of the
-	# 		other pieces. Again, probably a much better way to do this, but it works.
+	# This is probably not the way to do this, but it works. Basically, just setting the Z index super
+	# high for the piece that we are going to tween, so that it's guaranteed to be in front of the
+	# other pieces. Again, probably a much better way to do this, but it works.
 	var original_z_index: int = piece.z_index
 	piece.z_index = 100
 
 	var tween := create_tween()
-	tween.tween_property(piece, "position:y", -100, .15).set_trans(Tween.TRANS_CUBIC).as_relative()
-	tween.tween_property(piece, "position:y", 100, .15).set_trans(Tween.TRANS_CUBIC).as_relative()
+	tween.tween_property(piece, "position:y", -50, 0.2).set_trans(Tween.TRANS_QUAD).as_relative()
+	tween.tween_property(piece, "position:y", 50, 0.2).set_trans(Tween.TRANS_QUAD).as_relative()
 	await tween.finished
 
-	# TODO: Again, probably not the best way to do this. But we want to set the z_index back to it's
-	# 		original value
+	# Again, probably not the best way to do this. But we want to set the z_index back to it's
+	# original value
 	piece.z_index = original_z_index
 
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_state_changed_scoring(signal_arguments: Dictionary) -> void:
+	# This wait should be about the amount of time it takes for "_initiate_ui()" in "end_game_scorer_ui.gd"
+	# to finish. That way we fully slide the scoring panel out before we start scoring.
+	# TODO: This is a really terrible way to do this and we should definitely make it better!
+	await get_tree().create_timer(1).timeout
 	_score_game(signal_arguments)
 
 # ------------------------------------------------------------------------------------------------ #

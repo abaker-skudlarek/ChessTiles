@@ -1,9 +1,10 @@
 extends Node
 
 func _init() -> void:
-	wait()
+	var a: int = 10
+	print(a)
 
-func wait() -> void:
-	print("waiting")
-	await get_tree().create_timer(10.0).timeout
-	print("done waiting")
+	if a < 0:
+		print("negative")
+	else:
+		print("positive")

@@ -28,7 +28,7 @@ enum BoardLocationStates {
 	ERROR,			  # Default state
 }
 
-const INITIAL_CHESS_MOVES: int = 0 # 5
+const INITIAL_CHESS_MOVES: int = 5
 # NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
 const PLAYER_FAMILY: String = "player"
 const ENEMY_FAMILY: String = "enemy"
@@ -69,7 +69,7 @@ func _on_chess_move_finished() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_chess_move_gained(num_moves_gained: int) -> void:
-	#_chess_moves_remaining += num_moves_gained
+	_chess_moves_remaining += num_moves_gained
 	SignalBus.emit_signal("chess_moves_remaining_updated", _chess_moves_remaining)
 	
 # ------------------------------------------------------------------------------------------------ #
