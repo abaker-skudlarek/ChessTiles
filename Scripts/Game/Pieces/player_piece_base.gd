@@ -61,9 +61,7 @@ func calculate_possible_moves(_board: Array, _current_grid_location: Vector2, _b
 
 # ------------------------------------------------------------------------------------------------ #
 
-func score_piece() -> void:
-	# TODO: need to wait for the animation to finish, before we return
-	$Sprite2D/AnimationPlayer.play("score_piece")
-	await $Sprite2D/AnimationPlayer.animation_finished
+func play_sound_score() -> void:
+	$SoundScorePositive.play()
 
 # ------------------------------------------------------------------------------------------------ #
