@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bgfejr43nwrth"
+path="res://.godot/imported/ScoreNegative.mp3-22a95da4b7be1983fd31275e3b6893ac.mp3str"
+
+[deps]
+
+source_file="res://Audio/Sound Effects/ScoreNegative.mp3"
+dest_files=["res://.godot/imported/ScoreNegative.mp3-22a95da4b7be1983fd31275e3b6893ac.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

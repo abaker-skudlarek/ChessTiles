@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cb3swvs5fb3cc"]
+[gd_scene load_steps=5 format=3 uid="uid://cb3swvs5fb3cc"]
 
 [ext_resource type="Script" path="res://Scripts/Game/Pieces/enemy_piece_base.gd" id="1_dsfhh"]
 [ext_resource type="Texture2D" uid="uid://bleeup1fdwl0j" path="res://icon.svg" id="2_8nfsi"]
+[ext_resource type="AudioStream" uid="uid://bgfejr43nwrth" path="res://Audio/Sound Effects/ScoreNegative.mp3" id="3_en0ep"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qocdt"]
 size = Vector2(128, 128)
@@ -14,3 +15,6 @@ texture = ExtResource("2_8nfsi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_qocdt")
+
+[node name="SoundScoreNegative" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_en0ep")

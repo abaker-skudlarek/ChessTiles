@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dps4igm1801ya"
+path="res://.godot/imported/ScorePositive.mp3-553e531512b0f6402bd307f2ca392e51.mp3str"
+
+[deps]
+
+source_file="res://Audio/Sound Effects/ScorePositive.mp3"
+dest_files=["res://.godot/imported/ScorePositive.mp3-553e531512b0f6402bd307f2ca392e51.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

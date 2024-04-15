@@ -41,7 +41,7 @@ func _score_game(signal_arguments: Dictionary) -> void:
 			_total_score += _piece_values[piece.piece_name]
 
 			SignalBus.emit_signal("piece_scored", _piece_values[piece.piece_name])
-
+			piece.play_sound_score()
 			await _tween_scoring_piece(piece)
 
 	SignalBus.emit_signal("end_game_score_calculated", _total_score)
@@ -58,8 +58,8 @@ func _tween_scoring_piece(piece: Node) -> void:
 	piece.z_index = 100
 
 	var tween := create_tween()
-	tween.tween_property(piece, "position:y", -50, 0.2).set_trans(Tween.TRANS_QUAD).as_relative()
-	tween.tween_property(piece, "position:y", 50, 0.2).set_trans(Tween.TRANS_QUAD).as_relative()
+	tween.tween_property(piece, "position:y", -50, 0.17).set_trans(Tween.TRANS_QUAD).as_relative()
+	tween.tween_property(piece, "position:y", 50, 0.17).set_trans(Tween.TRANS_QUAD).as_relative()
 	await tween.finished
 
 	# Again, probably not the best way to do this. But we want to set the z_index back to it's
