@@ -21,6 +21,7 @@ var _total_score: int = 0
 func _ready() -> void:
 	visible = false
 	SignalBus.connect("state_changed_scoring", _on_state_changed_scoring)	
+	SignalBus.connect("state_changed_game_over", _on_state_changed_game_over)
 	SignalBus.connect("piece_scored", _on_piece_scored)	
 
 # ------------------------------------------------------------------------------------------------ #
@@ -32,6 +33,15 @@ func _initiate_ui() -> void:
 	tween.tween_property(self, "position:y", 200, 0.2).set_trans(Tween.TRANS_QUAD).as_relative()
 	await tween.finished
 	await get_tree().create_timer(0.75).timeout
+
+# ------------------------------------------------------------------------------------------------ #
+
+func _remove_ui() -> void:
+	await get_tree().create_timer(0.5).timeout
+	var tween := create_tween()
+	tween.tween_property(self, "position:y", -200, 0.3).set_trans(Tween.TRANS_QUAD).as_relative()
+	await tween.finished
+	visible = false
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -64,6 +74,11 @@ func _score_piece(piece_value: int) -> void:
 
 func _on_state_changed_scoring(_signal_arguments: Dictionary) -> void:
 	_initiate_ui()
+
+# ------------------------------------------------------------------------------------------------ #
+
+func _on_state_changed_game_over() -> void:
+	_remove_ui()
 
 # ------------------------------------------------------------------------------------------------ #
 
