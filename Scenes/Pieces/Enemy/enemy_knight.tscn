@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://bi21o1vfrebgc" path="res://Sprites/Enemy/b_knight.png" id="2_hejjn"]
 
 [node name="EnemyKnight" instance=ExtResource("1_53vnd")]
-scale = Vector2(0.75, 0.75)
 value = 3
 piece_name = "enemy_knight"
 

@@ -29,9 +29,11 @@ gdscript/warnings/untyped_declaration=2
 
 [display]
 
-window/size/viewport_width=720
-window/size/viewport_height=1280
+window/size/viewport_width=180
+window/size/viewport_height=320
 window/size/initial_position_type=2
+window/size/window_width_override=720
+window/size/window_height_override=1280
 window/stretch/mode="viewport"
 window/handheld/orientation=1
 
@@ -92,4 +94,5 @@ pointing/emulate_touch_from_mouse=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.235294, 0.235294, 0.235294, 1)

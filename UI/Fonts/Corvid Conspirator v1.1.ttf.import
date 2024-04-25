@@ -1,0 +1,33 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://1dai416pep6u"
+path="res://.godot/imported/Corvid Conspirator v1.1.ttf-12105cff69cb391691832fc10e0f3867.fontdata"
+
+[deps]
+
+source_file="res://UI/Fonts/Corvid Conspirator v1.1.ttf"
+dest_files=["res://.godot/imported/Corvid Conspirator v1.1.ttf-12105cff69cb391691832fc10e0f3867.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=1
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[]
+language_support={}
+script_support={}
+opentype_features={}

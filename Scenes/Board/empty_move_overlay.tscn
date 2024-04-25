@@ -1,16 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7e1nl1ppbvrw"]
 
 [ext_resource type="Script" path="res://Scripts/Game/empty_move_overlay.gd" id="1_o3f4l"]
-[ext_resource type="Texture2D" uid="uid://cmwq0g3ryqlxw" path="res://Sprites/Squares/empty_move_square_overlay.png" id="2_41vr5"]
+[ext_resource type="Texture2D" uid="uid://cipphmw2qfyqq" path="res://Sprites/Board/28x28_black_move_overlay.png" id="2_fiun6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ltqoe"]
-size = Vector2(128, 128)
+size = Vector2(28, 28)
 
 [node name="EmptyMoveOverlay" type="Area2D"]
 script = ExtResource("1_o3f4l")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_41vr5")
+texture_filter = 1
+texture = ExtResource("2_fiun6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ltqoe")

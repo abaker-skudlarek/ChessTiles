@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://c6bnr7flxneae" path="res://Sprites/Player/w_king.png" id="2_v152s"]
 
 [node name="PlayerKing" instance=ExtResource("1_jkld3")]
-scale = Vector2(0.75, 0.75)
 script = ExtResource("2_ec2sf")
 
 [node name="Sprite2D" parent="." index="0"]

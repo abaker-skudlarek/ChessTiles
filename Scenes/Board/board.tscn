@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://6w14jlhqkap5"]
+[gd_scene load_steps=3 format=3 uid="uid://6w14jlhqkap5"]
 
 [ext_resource type="Script" path="res://Scripts/Game/board.gd" id="1_6gofn"]
+[ext_resource type="Texture2D" uid="uid://cyo2lc3x0meu2" path="res://Sprites/Board/board.png" id="1_pd0hm"]
 
-[node name="Board" type="Node"]
+[node name="Board" type="Sprite2D"]
+texture_filter = 1
+position = Vector2(90, 230)
+texture = ExtResource("1_pd0hm")
 script = ExtResource("1_6gofn")

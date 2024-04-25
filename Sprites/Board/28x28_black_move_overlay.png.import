@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmya03lyphagl"
-path="res://.godot/imported/red_button00.png-6d243bdfacfceaf722bc8ece47659114.ctex"
+uid="uid://cipphmw2qfyqq"
+path="res://.godot/imported/28x28_black_move_overlay.png-cdc67c6cec3573ddcc9bca677d96d9ce.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UI/Sprites/Buttons/red_button00.png"
-dest_files=["res://.godot/imported/red_button00.png-6d243bdfacfceaf722bc8ece47659114.ctex"]
+source_file="res://Sprites/Board/28x28_black_move_overlay.png"
+dest_files=["res://.godot/imported/28x28_black_move_overlay.png-cdc67c6cec3573ddcc9bca677d96d9ce.ctex"]
 
 [params]
 
