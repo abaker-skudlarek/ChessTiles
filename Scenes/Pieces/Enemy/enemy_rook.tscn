@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://dvmwt6a76vhw7"]
 
 [ext_resource type="PackedScene" uid="uid://cb3swvs5fb3cc" path="res://Scenes/Pieces/Enemy/enemy_piece_base.tscn" id="1_xbkle"]
-[ext_resource type="Texture2D" uid="uid://bfgd0nf0yl71m" path="res://Sprites/Enemy/b_rook.png" id="2_ymlmw"]
+[ext_resource type="Texture2D" uid="uid://vyummvs2xlnf" path="res://Sprites/8x8 Pieces/Black_Rook_8x8.png" id="2_itscf"]
 
 [node name="EnemyRook" instance=ExtResource("1_xbkle")]
 value = 5
 piece_name = "enemy_rook"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_ymlmw")
+texture = ExtResource("2_itscf")

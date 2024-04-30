@@ -5,8 +5,8 @@ extends Node
 # ------------------------------------------------------------------------------------------------ #
 
 const GRID_X_START_LOCATION: int = 22
-const GRID_Y_START_LOCATION: int = 163
-const GRID_OFFSET: int = 24
+const GRID_Y_START_LOCATION: int = 162
+const GRID_OFFSET: int = 34
 const GRID_WIDTH: int = 5
 const GRID_HEIGHT: int = 5
 const NONE: String = "NONE"

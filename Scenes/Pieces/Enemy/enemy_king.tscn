@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://pa3sogclavu"]
 
 [ext_resource type="PackedScene" uid="uid://cb3swvs5fb3cc" path="res://Scenes/Pieces/Enemy/enemy_piece_base.tscn" id="1_tf1g7"]
-[ext_resource type="Texture2D" uid="uid://b2ilap5plc1cg" path="res://Sprites/Enemy/b_king.png" id="2_hmgrl"]
+[ext_resource type="Texture2D" uid="uid://2cg0gy6pn7l4" path="res://Sprites/8x8 Pieces/Black_King_8x8.png" id="2_lx2qb"]
 
 [node name="EnemyKing" instance=ExtResource("1_tf1g7")]
 value = 20
 piece_name = "enemy_king"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_hmgrl")
+texture = ExtResource("2_lx2qb")
