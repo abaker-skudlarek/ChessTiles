@@ -16,6 +16,7 @@ var piece_family: String = GameManager.PLAYER_FAMILY
 
 func _input_event(_viewport: Viewport, event:InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		print("piece_base piece clicked")
 		SignalBus.emit_signal("player_piece_clicked", position, piece_name)
 
 # ------------------------------------------------------------------------------------------------ #

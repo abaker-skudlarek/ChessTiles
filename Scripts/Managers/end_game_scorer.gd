@@ -58,8 +58,8 @@ func _tween_scoring_piece(piece: Node) -> void:
 	piece.z_index = 100
 
 	var tween := create_tween()
-	tween.tween_property(piece, "position:y", -50, 0.17).set_trans(Tween.TRANS_QUAD).as_relative()
-	tween.tween_property(piece, "position:y", 50, 0.17).set_trans(Tween.TRANS_QUAD).as_relative()
+	tween.tween_property(piece, "position:y", -20, 0.15).set_trans(Tween.TRANS_QUAD).as_relative()
+	tween.tween_property(piece, "position:y", 20, 0.15).set_trans(Tween.TRANS_QUAD).as_relative()
 	await tween.finished
 
 	# Again, probably not the best way to do this. But we want to set the z_index back to it's
