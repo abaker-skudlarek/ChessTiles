@@ -17,3 +17,5 @@ grow_horizontal = 2
 
 [node name="GameOverUI" parent="." instance=ExtResource("2_86e4r")]
 visible = false
+offset_top = -78.0
+offset_bottom = 73.0

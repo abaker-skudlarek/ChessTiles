@@ -571,7 +571,6 @@ func _on_slide_move_finished() -> void:
 # ------------------------------------------------------------------------------------------------ #
 
 func _on_player_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> void:
-	print("player piece clicked")
 	_set_last_clicked_piece(piece_pixel_location)	
 	_remove_move_overlays()
 	
