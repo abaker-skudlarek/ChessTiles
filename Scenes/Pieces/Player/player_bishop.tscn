@@ -1,12 +1,11 @@
 [gd_scene load_steps=4 format=3 uid="uid://d4h85vtjxykou"]
 
 [ext_resource type="PackedScene" uid="uid://cvn0p8a62h25h" path="res://Scenes/Pieces/Player/player_piece_base.tscn" id="1_ejgrv"]
-[ext_resource type="Texture2D" uid="uid://bwlb36g32pn04" path="res://Sprites/Player/w_bishop.png" id="2_evsok"]
 [ext_resource type="Script" path="res://Scripts/Game/Pieces/player_bishop.gd" id="2_utnkl"]
+[ext_resource type="Texture2D" uid="uid://uowj5p7p1pj8" path="res://Sprites/8x8 Pieces/White_Bishop_8x8.png" id="3_eijsy"]
 
 [node name="PlayerBishop" instance=ExtResource("1_ejgrv")]
-scale = Vector2(0.75, 0.75)
 script = ExtResource("2_utnkl")
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_evsok")
+texture = ExtResource("3_eijsy")

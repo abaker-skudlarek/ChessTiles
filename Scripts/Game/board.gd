@@ -4,9 +4,9 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-const GRID_X_START_LOCATION: int = 104
-const GRID_Y_START_LOCATION: int = 384
-const GRID_OFFSET: int = 128
+const GRID_X_START_LOCATION: int = 22
+const GRID_Y_START_LOCATION: int = 162
+const GRID_OFFSET: int = 34
 const GRID_WIDTH: int = 5
 const GRID_HEIGHT: int = 5
 const NONE: String = "NONE"
@@ -254,14 +254,14 @@ func _remove_move_overlays() -> void:
 
 # ------------------------------------------------------------------------------------------------ #
 
-## Generate the board background by creating a grid of alternating sprites
-func _generate_board_background() -> void:
-	for i in GRID_WIDTH:
-		for j in GRID_HEIGHT:	
-			var sprite := Sprite2D.new()
-			sprite.texture = ResourceManager.square_backgrounds["dark"] if (i + j) % 2 == 0 else ResourceManager.square_backgrounds["light"]
-			sprite.position = _grid_to_pixel(Vector2(i, j))
-			add_child(sprite)
+### Generate the board background by creating a grid of alternating sprites
+#func _generate_board_background() -> void:
+#	for i in GRID_WIDTH:
+#		for j in GRID_HEIGHT:	
+#			var sprite := Sprite2D.new()
+#			sprite.texture = ResourceManager.square_backgrounds["dark"] if (i + j) % 2 == 0 else ResourceManager.square_backgrounds["light"]
+#			sprite.position = _grid_to_pixel(Vector2(i, j))
+#			add_child(sprite)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -520,7 +520,7 @@ func _check_valid_chess_moves() -> bool:
 ## Perform functions that need to occur at the start of the game
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
-	_generate_board_background()
+	#_generate_board_background()
 	
 	# Get and spawn our starting pieces
 	var starting_pieces_to_spawn: Array = PieceSpawnManager.get_starting_pieces()

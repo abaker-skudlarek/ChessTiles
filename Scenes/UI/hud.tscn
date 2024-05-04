@@ -9,10 +9,13 @@
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -148.5
-offset_top = 10.0
-offset_right = 148.5
-offset_bottom = 171.0
+offset_left = -63.0
+offset_top = 38.0
+offset_right = 63.0
+offset_bottom = 106.0
 grow_horizontal = 2
 
 [node name="GameOverUI" parent="." instance=ExtResource("2_86e4r")]
+visible = false
+offset_top = -78.0
+offset_bottom = 73.0

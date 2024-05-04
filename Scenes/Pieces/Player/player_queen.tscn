@@ -1,19 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://f2f6l1kuagow"]
+[gd_scene load_steps=4 format=3 uid="uid://f2f6l1kuagow"]
 
 [ext_resource type="PackedScene" uid="uid://cvn0p8a62h25h" path="res://Scenes/Pieces/Player/player_piece_base.tscn" id="1_7f82r"]
-[ext_resource type="Texture2D" uid="uid://n2tuvo88oga4" path="res://Sprites/Player/w_queen.png" id="2_86oae"]
 [ext_resource type="Script" path="res://Scripts/Game/Pieces/player_queen.gd" id="2_dqydr"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tp10j"]
-size = Vector2(128, 128)
+[ext_resource type="Texture2D" uid="uid://chjyxd7ytssb0" path="res://Sprites/8x8 Pieces/White_Queen_8x8.png" id="3_0i5l5"]
 
 [node name="player_queen" instance=ExtResource("1_7f82r")]
-scale = Vector2(0.75, 0.75)
 script = ExtResource("2_dqydr")
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_86oae")
-
-[node name="CollisionShape2D" parent="." index="1"]
-position = Vector2(3.33334, 0)
-shape = SubResource("RectangleShape2D_tp10j")
+texture = ExtResource("3_0i5l5")

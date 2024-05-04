@@ -1,16 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://d3jrrpaqw32y1"]
 
 [ext_resource type="Script" path="res://Scripts/Game/enemy_move_overlay.gd" id="1_i25rs"]
-[ext_resource type="Texture2D" uid="uid://csqbyvcuu6sp2" path="res://Sprites/Squares/red_move_square_overlay.png" id="2_iduaq"]
+[ext_resource type="Texture2D" uid="uid://bucoq5366xur" path="res://Sprites/Board/28x28_red_move_overlay.png" id="2_0lxt4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ltqoe"]
-size = Vector2(128, 128)
+size = Vector2(28, 28)
 
 [node name="EnemyMoveOverlay" type="Area2D"]
 script = ExtResource("1_i25rs")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_iduaq")
+texture_filter = 1
+texture = ExtResource("2_0lxt4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ltqoe")

@@ -5,9 +5,11 @@
 [ext_resource type="AudioStream" uid="uid://dps4igm1801ya" path="res://Audio/Sound Effects/ScorePositive.mp3" id="3_tse7i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uq0vk"]
-size = Vector2(128, 128)
+size = Vector2(8, 8)
 
 [node name="Area2D" type="Area2D"]
+z_index = 10
+scale = Vector2(3, 3)
 script = ExtResource("1_g7hxw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

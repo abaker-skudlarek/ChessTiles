@@ -1,12 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://bmpyypglwi8vx"]
 
 [ext_resource type="PackedScene" uid="uid://cb3swvs5fb3cc" path="res://Scenes/Pieces/Enemy/enemy_piece_base.tscn" id="1_el0t1"]
-[ext_resource type="Texture2D" uid="uid://bce3jc36srac8" path="res://Sprites/Enemy/b_pawn.png" id="2_qh1bo"]
+[ext_resource type="Texture2D" uid="uid://cqxnqgnh0iq2x" path="res://Sprites/8x8 Pieces/Black_Pawn_8x8.png" id="2_or7hv"]
 
 [node name="EnemyPawn" instance=ExtResource("1_el0t1")]
-scale = Vector2(0.75, 0.75)
 value = 1
 piece_name = "enemy_pawn"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_qh1bo")
+texture = ExtResource("2_or7hv")

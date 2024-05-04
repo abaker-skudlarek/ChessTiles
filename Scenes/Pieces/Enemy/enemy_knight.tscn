@@ -1,12 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://dd7q0t7ctn8vv"]
 
 [ext_resource type="PackedScene" uid="uid://cb3swvs5fb3cc" path="res://Scenes/Pieces/Enemy/enemy_piece_base.tscn" id="1_53vnd"]
-[ext_resource type="Texture2D" uid="uid://bi21o1vfrebgc" path="res://Sprites/Enemy/b_knight.png" id="2_hejjn"]
+[ext_resource type="Texture2D" uid="uid://bihfrsdqx2vtv" path="res://Sprites/8x8 Pieces/Black_Knight_8x8.png" id="2_djutf"]
 
 [node name="EnemyKnight" instance=ExtResource("1_53vnd")]
-scale = Vector2(0.75, 0.75)
 value = 3
 piece_name = "enemy_knight"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_hejjn")
+texture = ExtResource("2_djutf")

@@ -5,9 +5,11 @@
 [ext_resource type="AudioStream" uid="uid://bgfejr43nwrth" path="res://Audio/Sound Effects/ScoreNegative.mp3" id="3_en0ep"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qocdt"]
-size = Vector2(128, 128)
+size = Vector2(8, 8)
 
 [node name="Area2D" type="Area2D"]
+z_index = 10
+scale = Vector2(3, 3)
 script = ExtResource("1_dsfhh")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

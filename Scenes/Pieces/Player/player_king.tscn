@@ -2,11 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://cvn0p8a62h25h" path="res://Scenes/Pieces/Player/player_piece_base.tscn" id="1_jkld3"]
 [ext_resource type="Script" path="res://Scripts/Game/Pieces/player_king.gd" id="2_ec2sf"]
-[ext_resource type="Texture2D" uid="uid://c6bnr7flxneae" path="res://Sprites/Player/w_king.png" id="2_v152s"]
+[ext_resource type="Texture2D" uid="uid://7vqije5102ea" path="res://Sprites/8x8 Pieces/White_King_8x8.png" id="3_eopts"]
 
 [node name="PlayerKing" instance=ExtResource("1_jkld3")]
-scale = Vector2(0.75, 0.75)
 script = ExtResource("2_ec2sf")
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_v152s")
+texture = ExtResource("3_eopts")

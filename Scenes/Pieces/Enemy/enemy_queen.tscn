@@ -1,12 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdq5doktnrgtv"]
 
 [ext_resource type="PackedScene" uid="uid://cb3swvs5fb3cc" path="res://Scenes/Pieces/Enemy/enemy_piece_base.tscn" id="1_ovy78"]
-[ext_resource type="Texture2D" uid="uid://i3jxk35hwqk3" path="res://Sprites/Enemy/b_queen.png" id="2_87k8q"]
+[ext_resource type="Texture2D" uid="uid://dv1gnxrulnshi" path="res://Sprites/8x8 Pieces/Black_Queen_8x8.png" id="2_u2472"]
 
 [node name="EnemyQueen" instance=ExtResource("1_ovy78")]
-scale = Vector2(0.75, 0.75)
 value = 9
 piece_name = "enemy_queen"
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_87k8q")
+texture = ExtResource("2_u2472")

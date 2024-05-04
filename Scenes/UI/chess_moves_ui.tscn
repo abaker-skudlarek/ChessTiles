@@ -1,26 +1,23 @@
 [gd_scene load_steps=4 format=3 uid="uid://bfk0nh8h46qhx"]
 
 [ext_resource type="Script" path="res://Scripts/UI/chess_moves_ui.gd" id="1_jwq7c"]
-[ext_resource type="Texture2D" uid="uid://bnv10rdjqahgp" path="res://UI/Sprites/ProgressBars/square_shadow.png" id="1_p3xxb"]
-[ext_resource type="Texture2D" uid="uid://cku6rk7hja4mo" path="res://UI/Sprites/ProgressBars/squareYellow.png" id="2_me6xk"]
+[ext_resource type="Texture2D" uid="uid://bnv10rdjqahgp" path="res://UI/Sprites/ProgressBars/square_shadow.png" id="2_el3ct"]
+[ext_resource type="Texture2D" uid="uid://cku6rk7hja4mo" path="res://UI/Sprites/ProgressBars/squareYellow.png" id="3_awud6"]
 
 [node name="ChessMovesUI" type="PanelContainer"]
 texture_filter = 1
-offset_right = 297.0
-offset_bottom = 161.0
+offset_right = 126.0
+offset_bottom = 68.0
 script = ExtResource("1_jwq7c")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="ChessMovesLabel" type="Label" parent="VBoxContainer"]
+texture_filter = 1
 layout_mode = 2
 text = "Chess Moves"
 horizontal_alignment = 1
-
-[node name="Spacer1" type="Control" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="ChessMovesRemainingLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -28,16 +25,15 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer2" type="Control" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
 [node name="ChargeBar" type="TextureProgressBar" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_stretch_ratio = 0.0
+value = 50.0
 nine_patch_stretch = true
-stretch_margin_left = 10
-stretch_margin_top = 10
-stretch_margin_right = 10
-stretch_margin_bottom = 15
-texture_under = ExtResource("1_p3xxb")
-texture_progress = ExtResource("2_me6xk")
+stretch_margin_left = 6
+stretch_margin_top = 6
+stretch_margin_right = 6
+stretch_margin_bottom = 6
+texture_under = ExtResource("2_el3ct")
+texture_progress = ExtResource("3_awud6")
+tint_progress = Color(0.435294, 0.819608, 0.858824, 1)
