@@ -50,27 +50,20 @@ func _swipe_detection() -> void:
 		if !_is_swiping:
 			_is_swiping = true
 			_swipe_start_position = get_viewport().get_mouse_position()	
-			print("Start position: ", _swipe_start_position)
 	if Input.is_action_pressed("mouse_click"):
 		if _is_swiping:
 			_swipe_current_position = get_viewport().get_mouse_position()
 			if _swipe_start_position.distance_to(_swipe_current_position) >= _min_swipe_length:
 				if abs(_swipe_start_position.y - _swipe_current_position.y) <= _swipe_divergence_threshold:
-					print("Horizontal swipe detected")
 					if _swipe_start_position.x < _swipe_current_position.x:
-						print("Swipe right detected")
 						SignalBus.emit_signal("slide_move_right")
 					else:
-						print("Swipe left detected")
 						SignalBus.emit_signal("slide_move_left")
 					_is_swiping = false
 				elif abs(_swipe_start_position.x - _swipe_current_position.x) <= _swipe_divergence_threshold:
-					print("Vertical swipe detected")
 					if _swipe_start_position.y < _swipe_current_position.y:
-						print("Swipe down detected")
 						SignalBus.emit_signal("slide_move_down")
 					else:
-						print("Swipe up detected")
 						SignalBus.emit_signal("slide_move_up")
 					_is_swiping = false
 	else:
