@@ -73,7 +73,7 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 														current_grid_location.y + direction_to_move.y)
 						# Check that the new location we want to move to is in bounds
 						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+							slide_moves_performed += await _slide_move_piece(current_grid_location, new_grid_location)
 
 		elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
 			for i: int in _board.size():
@@ -88,7 +88,7 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 														current_grid_location.y + direction_to_move.y)
 						# Check that the new location we want to move to is in bounds
 						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+							slide_moves_performed += await _slide_move_piece(current_grid_location, new_grid_location)
 		elif direction_to_move == Vector2.DOWN:
 			for i in _board.size():
 				for j in range(_board[i].size() - 1, -1, -1):
@@ -102,7 +102,7 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 														current_grid_location.y + direction_to_move.y)
 						# Check that the new location we want to move to is in bounds
 						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+							slide_moves_performed += await _slide_move_piece(current_grid_location, new_grid_location)
 
 		if slide_moves_performed > 0:
 			SignalBus.emit_signal("slide_move_finished")
@@ -129,7 +129,7 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 
 	# If there is no piece at the new location, we can simply move the piece at the current location to the new location
 	if piece_at_new_location == null:
-		_move_piece_from_location_a_to_empty_location_b(current_piece_grid_location, new_piece_grid_location)
+		await _move_piece_from_location_a_to_empty_location_b(current_piece_grid_location, new_piece_grid_location)
 		return 1
 
 	# If the piece at the current location is a player piece and the piece at the new location is a player piece, we
@@ -253,17 +253,6 @@ func _remove_move_overlays() -> void:
 
 # ------------------------------------------------------------------------------------------------ #
 
-### Generate the board background by creating a grid of alternating sprites
-#func _generate_board_background() -> void:
-#	for i in GRID_WIDTH:
-#		for j in GRID_HEIGHT:	
-#			var sprite := Sprite2D.new()
-#			sprite.texture = ResourceManager.square_backgrounds["dark"] if (i + j) % 2 == 0 else ResourceManager.square_backgrounds["light"]
-#			sprite.position = _grid_to_pixel(Vector2(i, j))
-#			add_child(sprite)
-
-# ------------------------------------------------------------------------------------------------ #
-
 ## Returns num_spaces amount of random empty spaces on the board
 func _get_random_empty_board_spaces(num_spaces: int) -> Array:	
 
@@ -367,6 +356,7 @@ func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, g
 	# Tween the piece to the new location
 	var move_tween := create_tween()
 	move_tween.tween_property(piece_to_move, "position", _grid_to_pixel(grid_location_b), .3).set_trans(Tween.TRANS_CUBIC)
+	await move_tween.finished
 
 # ------------------------------------------------------------------------------------------------ #
 

@@ -18,6 +18,7 @@ enum GameState {
 	MERGING,
 	SCORING,
 	GAME_OVER,
+	TWEENING,
 }
 
 # NOTE: I'm putting this here in the game manager because multiple scripts need to use these states
