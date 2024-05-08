@@ -58,7 +58,6 @@ func _process_slide_move(direction_to_move: Vector2) -> void:
 		# Reset the move overlays when performing a slide move
 		_remove_move_overlays()
 		
-		# TODO: REWRITE THIS TO BE MORE READABLE. Don't worry too much about efficiency, it's a small board
 		# Based on the direction to move, for each square, check if it's occupied. If it is, perform a slide 
 		# move for the piece in that square.
 		if direction_to_move == Vector2.RIGHT:
@@ -540,6 +539,16 @@ func _on_state_changed_start_game() -> void:
 	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
+
+
+
+# TODO: Would it be better to replace tweening the pieces with animations?
+# TODO: Could just make it so the animation moves the piece a certain amount of pixels
+# TODO: Maybe that would make it easier to queue them all up at play at once
+# TODO: We could then wait for them all to finish, and we don't take input until they are done
+# TODO: This could solve our diagonal input issue?	
+
+
 
 func _on_slide_move_left() -> void:
 	_process_slide_move(Vector2.LEFT)
