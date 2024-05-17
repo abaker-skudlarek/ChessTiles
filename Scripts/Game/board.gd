@@ -12,10 +12,12 @@ const GRID_HEIGHT: int = 5
 const NONE: String = "NONE"
 
 var _board: Array 				     # Two dimensional array that defines the board and holds references to piece locations
-var _pieces_on_board: Array = []     # Array containing a list of all the pieces that are currently on the board. This includes Player and Enemy pieces
+var _pieces_on_board: Array = []     # Array containing a list of all the pieces that are currently on the board. This includes Player and 
+									 # 	Enemy pieces
 var _shown_move_overlays: Array = [] # Array containing a list of all the move overlays that are currently on the board.
 var _last_clicked_piece: Node 		 # The last piece that was clicked, needed to know which piece to chess move
 									 # TODO: There might be a better way to do this, but not going to worry about it yet
+var _object_tweener: ObjectTweener   # Used to tween objects, especially multiple at the same time
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -41,6 +43,12 @@ func _enter_tree() -> void:
 
 # ------------------------------------------------------------------------------------------------ #
 
+func _ready() -> void:
+	_object_tweener = ObjectTweener.new()
+	add_child(_object_tweener)
+
+# ------------------------------------------------------------------------------------------------ #
+
 ## Processes a slide move. Attempts to move all pieces on the board in the direction that is defined 
 ## 	in direction_to_move. If the piece can't move, it doesn't. 
 ## 	direction_to_move is a Vector2 which should contain a 1 or -1 in the direction that we want to move 
@@ -48,71 +56,69 @@ func _enter_tree() -> void:
 ## 				 If we want to move all pieces up, direction_to_move = Vector2(0, -1)
 func _process_slide_move(direction_to_move: Vector2) -> void:
 
-	# Only move if we are waiting for user input
-	if GameManager.get_current_game_state() == GameManager.GameState.WAITING_USER_INPUT:
+	GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
 
-		GameManager.change_state(GameManager.GameState.SLIDE_MOVE)
+	var slide_moves_performed: int = 0
+	
+	# Reset the move overlays when performing a slide move
+	_remove_move_overlays()
+	
+	# Based on the direction to move, for each square, check if it's occupied. If it is, perform a slide 
+	# move for the piece in that square.
+	if direction_to_move == Vector2.RIGHT:
+		for i in range(_board.size() - 1, -1, -1):
+			for j: int in _board[i].size():
+				var current_grid_location := Vector2(i, j)
+				# Check that the location we are looking at is occupied by a piece
+				if (
+					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER 
+					or _is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
+				):
+					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
+													 current_grid_location.y + direction_to_move.y)
+					# Check that the new location we want to move to is in bounds
+					if _is_location_in_bounds(new_grid_location):
+						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
 
-		var slide_moves_performed: int = 0
-		
-		# Reset the move overlays when performing a slide move
-		_remove_move_overlays()
-		
-		# TODO: REWRITE THIS TO BE MORE READABLE. Don't worry too much about efficiency, it's a small board
-		# Based on the direction to move, for each square, check if it's occupied. If it is, perform a slide 
-		# move for the piece in that square.
-		if direction_to_move == Vector2.RIGHT:
-			for i in range(_board.size() - 1, -1, -1):
-				for j: int in _board[i].size():
-					var current_grid_location := Vector2(i, j)
-					# Check that the location we are looking at is occupied by a piece
-					if (
-						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
-						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
-					):
-						var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
-														current_grid_location.y + direction_to_move.y)
-						# Check that the new location we want to move to is in bounds
-						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+	elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
+		for i: int in _board.size():
+			for j: int in _board[i].size():
+				var current_grid_location := Vector2(i, j)
+				# Check that the location we are looking at is occupied by a piece
+				if (
+					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
+					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
+				):
+					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
+													 current_grid_location.y + direction_to_move.y)
+					# Check that the new location we want to move to is in bounds
+					if _is_location_in_bounds(new_grid_location):
+						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
 
-		elif direction_to_move == Vector2.LEFT or direction_to_move == Vector2.UP:
-			for i: int in _board.size():
-				for j: int in _board[i].size():
-					var current_grid_location := Vector2(i, j)
-					# Check that the location we are looking at is occupied by a piece
-					if (
-						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
-						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
-					):
-						var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
-														current_grid_location.y + direction_to_move.y)
-						# Check that the new location we want to move to is in bounds
-						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
-		elif direction_to_move == Vector2.DOWN:
-			for i in _board.size():
-				for j in range(_board[i].size() - 1, -1, -1):
-					var current_grid_location := Vector2(i, j)
-					# Check that the location we are looking at is occupied by a piece
-					if (
-						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
-						_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
-					):
-						var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
-														current_grid_location.y + direction_to_move.y)
-						# Check that the new location we want to move to is in bounds
-						if (new_grid_location.x < GRID_WIDTH and new_grid_location.x >= 0 and new_grid_location.y < GRID_HEIGHT and new_grid_location.y >= 0):
-							slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
+	elif direction_to_move == Vector2.DOWN:
+		for i in _board.size():
+			for j in range(_board[i].size() - 1, -1, -1):
+				var current_grid_location := Vector2(i, j)
+				# Check that the location we are looking at is occupied by a piece
+				if (
+					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_PLAYER or
+					_is_location_occupied(current_grid_location) == GameManager.BoardLocationStates.OCCUPIED_ENEMY
+				):
+					var new_grid_location := Vector2(current_grid_location.x + direction_to_move.x,
+													 current_grid_location.y + direction_to_move.y)
+					# Check that the new location we want to move to is in bounds
+					if _is_location_in_bounds(new_grid_location):
+						slide_moves_performed += _slide_move_piece(current_grid_location, new_grid_location)
 
-		if slide_moves_performed > 0:
-			SignalBus.emit_signal("slide_move_finished")
+	if slide_moves_performed > 0:
+		await _object_tweener.execute()
+		SignalBus.emit_signal("slide_move_finished")
 
-		if _is_game_over():
-			var signal_arguments: Dictionary = { final_board = _board.duplicate() }
-			GameManager.change_state(GameManager.GameState.SCORING, signal_arguments)
-		else:
-			GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
+	if _is_game_over():
+		var signal_arguments: Dictionary = { final_board = _board.duplicate() }
+		GameManager.change_state(GameManager.GameState.SCORING, signal_arguments)
+	else:
+		GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -163,19 +169,23 @@ func _slide_move_piece(current_piece_grid_location: Vector2, new_piece_grid_loca
 		
 # ------------------------------------------------------------------------------------------------ #
 
-## Move the last clicked piece, according to its chess movementm, from its location to a new empty location
+## Move the last clicked piece, according to its chess movement, from its location to a new empty location
 func _chess_move_piece_to_empty_square(desired_pixel_location: Vector2) -> void:
 
 	# If a chess move isn't allowed, return and do nothing
 	if !GameManager.is_chess_move_allowed():
 		return
 
+	GameManager.change_state(GameManager.GameState.CHESS_MOVE)
+
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
 	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
 
 	_move_piece_from_location_a_to_empty_location_b(last_clicked_piece_grid_location, desired_grid_location)
+	await _object_tweener.execute()
 	
 	SignalBus.emit_signal("chess_move_finished")
+	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 	
 # ------------------------------------------------------------------------------------------------ #
 
@@ -187,14 +197,18 @@ func _chess_move_piece_to_enemy_square(desired_pixel_location: Vector2) -> void:
 	if !GameManager.is_chess_move_allowed():
 		return
 
+	GameManager.change_state(GameManager.GameState.CHESS_MOVE)
+
 	var last_clicked_piece_grid_location: Vector2 = _pixel_to_grid(_last_clicked_piece.position)
 	var desired_grid_location: Vector2 = _pixel_to_grid(desired_pixel_location)
 	var piece_at_desired_grid_location: String = _get_piece_name_at_grid_location(desired_grid_location) 
 	
 	_move_and_take_piece_from_location_a_to_location_b(last_clicked_piece_grid_location, desired_grid_location)
+	await _object_tweener.execute()
 
 	SignalBus.emit_signal("chess_move_finished")
 	SignalBus.emit_signal("piece_taken", piece_at_desired_grid_location)
+	GameManager.change_state(GameManager.GameState.WAITING_USER_INPUT)
 	
 # ------------------------------------------------------------------------------------------------ #
 
@@ -251,17 +265,6 @@ func _remove_move_overlays() -> void:
 	for i in _shown_move_overlays.size():
 		_shown_move_overlays[i].queue_free()
 	_shown_move_overlays = []
-
-# ------------------------------------------------------------------------------------------------ #
-
-### Generate the board background by creating a grid of alternating sprites
-#func _generate_board_background() -> void:
-#	for i in GRID_WIDTH:
-#		for j in GRID_HEIGHT:	
-#			var sprite := Sprite2D.new()
-#			sprite.texture = ResourceManager.square_backgrounds["dark"] if (i + j) % 2 == 0 else ResourceManager.square_backgrounds["light"]
-#			sprite.position = _grid_to_pixel(Vector2(i, j))
-#			add_child(sprite)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -350,7 +353,7 @@ func _can_merge(piece_a_grid_location: Vector2, piece_b_grid_location: Vector2) 
 		return false
 
 	# We know the pieces are both player pieces, so check that their names are equal. If they are, they can merge
-	if (_get_piece_name_at_grid_location(piece_a_grid_location) == _get_piece_name_at_grid_location(piece_b_grid_location)):
+	if _get_piece_name_at_grid_location(piece_a_grid_location) == _get_piece_name_at_grid_location(piece_b_grid_location):
 		return true
 	
 	# If we have gotten here, return false. The pieces are not player pieces or they don't have the same name
@@ -365,9 +368,7 @@ func _move_piece_from_location_a_to_empty_location_b(grid_location_a: Vector2, g
 	_board[grid_location_a.x][grid_location_a.y] = null
 	_board[grid_location_b.x][grid_location_b.y] = piece_to_move
 
-	# Tween the piece to the new location
-	var move_tween := create_tween()
-	move_tween.tween_property(piece_to_move, "position", _grid_to_pixel(grid_location_b), .3).set_trans(Tween.TRANS_CUBIC)
+	_object_tweener.add(piece_to_move, _grid_to_pixel(grid_location_b))
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -415,7 +416,8 @@ func _move_and_take_piece_from_location_a_to_location_b(grid_location_a: Vector2
 ## Helper to check if a board square location is occupied, and if so, by who
 func _is_location_occupied(grid_location: Vector2) -> GameManager.BoardLocationStates:
 	var board_location_contents: Node = _board[grid_location.x][grid_location.y]
-	var state: GameManager.BoardLocationStates = GameManager.BoardLocationStates.ERROR  # Error state should not be returned, it should be set to one of the other ones. If not, bug.
+	var state: GameManager.BoardLocationStates = GameManager.BoardLocationStates.ERROR  # Error state should not be returned, it should be 
+																						#  set to one of the other ones. If not, bug.
 	
 	if board_location_contents == null:
 		state = GameManager.BoardLocationStates.NOT_OCCUPIED
@@ -425,6 +427,17 @@ func _is_location_occupied(grid_location: Vector2) -> GameManager.BoardLocationS
 		state = GameManager.BoardLocationStates.OCCUPIED_ENEMY
 		
 	return state
+
+# ------------------------------------------------------------------------------------------------ #
+
+## Helper to check if the passed in grid location is inside the board bounds
+func _is_location_in_bounds(grid_location: Vector2) -> bool:
+	return (
+		grid_location.x < GRID_WIDTH 
+		and grid_location.x >= 0 
+		and grid_location.y < GRID_HEIGHT 
+		and grid_location.y >= 0
+	)
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -501,7 +514,10 @@ func _check_valid_chess_moves() -> bool:
 			# If the location is occupied by a player piece, have it calculate it's possible moves. 
 			if _is_location_occupied(Vector2(i, j)) == GameManager.BoardLocationStates.OCCUPIED_PLAYER:
 				var piece_at_grid_location: Node = _board[i][j]
-				var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, Vector2(i, j), GRID_WIDTH, GRID_HEIGHT)
+				var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, 
+																								 Vector2(i, j), 
+																								 GRID_WIDTH, 
+																								 GRID_HEIGHT)
 				# If either of the possible moves arrays that are returned isn't empty, there is at least one possible
 				# chess move, so return true
 				if (
@@ -573,15 +589,19 @@ func _on_slide_move_finished() -> void:
 func _on_player_piece_clicked(piece_pixel_location: Vector2, piece_name: String) -> void:
 	_set_last_clicked_piece(piece_pixel_location)	
 	_remove_move_overlays()
-	
-	# Spawn the move overlays based on the location of the piece we clicked
-	var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
-	var piece_at_grid_location: Node = _board[piece_grid_location.x][piece_grid_location.y]
-	if piece_at_grid_location.has_method("calculate_possible_moves"):
-		var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, piece_grid_location, GRID_WIDTH, GRID_HEIGHT)
-		_spawn_move_overlays(possible_moves)
-	else:
-		printerr(piece_at_grid_location.piece_name, " does not have method 'calculate_possible_moves'!")
+
+	if GameManager.is_chess_move_allowed():
+		# Spawn the move overlays based on the location of the piece we clicked
+		var piece_grid_location: Vector2 = _pixel_to_grid(piece_pixel_location)
+		var piece_at_grid_location: Node = _board[piece_grid_location.x][piece_grid_location.y]
+		if piece_at_grid_location.has_method("calculate_possible_moves"):
+			var possible_moves: Dictionary = piece_at_grid_location.calculate_possible_moves(_board, 
+																							piece_grid_location, 
+																							GRID_WIDTH, 
+																							GRID_HEIGHT)
+			_spawn_move_overlays(possible_moves)
+		else:
+			printerr(piece_at_grid_location.piece_name, " does not have method 'calculate_possible_moves'!")
 
 # ------------------------------------------------------------------------------------------------ #
 

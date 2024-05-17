@@ -28,6 +28,7 @@ signal slide_move_finished
 signal chess_move_finished
 signal pieces_merged
 signal piece_taken(taken_piece_name: String)
+signal board_tweening
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Piece Signals -- #
