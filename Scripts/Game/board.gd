@@ -536,7 +536,6 @@ func _check_valid_chess_moves() -> bool:
 ## Perform functions that need to occur at the start of the game
 func _on_state_changed_start_game() -> void:
 	_board = _create_empty_2d_array()
-	#_generate_board_background()
 	
 	# Get and spawn our starting pieces
 	var starting_pieces_to_spawn: Array = PieceSpawnManager.get_starting_pieces()
