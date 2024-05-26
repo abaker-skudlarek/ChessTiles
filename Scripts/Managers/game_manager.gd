@@ -50,10 +50,6 @@ func _ready() -> void:
 	SignalBus.connect("slide_move_finished", _on_slide_move_finished)
 	SignalBus.connect("chess_move_finished", _on_chess_move_finished)
 	SignalBus.connect("chess_move_gained", _on_chess_move_gained)
-
-	# TODO: This will be moved somewhere else once we get a title screen. When "start game" is pressed, 
-	# 		the state will be changed
-	change_state(GameState.START_GAME)
 	
 # ------------------------------------------------------------------------------------------------ #
 
