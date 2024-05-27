@@ -1,28 +1,43 @@
 extends Node
 
-@onready var objects: Array = [$Icon, $Icon2, $Icon3, $Icon4]
-@onready var positions: Array = [Vector2(10, 10), Vector2(20, 20), Vector2(30, 30), Vector2(40, 40)]
-
-var tweener: ObjectTweener
+var _background_music: Array = ["1", "2", "3", "4"]
+var _played_music: Array = []
 
 func _ready() -> void:
-	tweener = ObjectTweener.new()
-	add_child(tweener)
+	print("ready get_music")
+	print(_get_music())
 
 func _input(event: InputEvent) -> void:
-
-	if event is InputEventKey:
-		if event.pressed and event.keycode == KEY_SPACE:
-			objects.shuffle()
-			positions.shuffle()
-			var objects_to_tween: Array = objects.slice(0, objects.size() - 2)	
-			var positions_to_tween: Array = positions.slice(0, positions.size() - 2)
-			print(objects_to_tween)
-			print(positions_to_tween)
-
-			for i in objects_to_tween.size():
-				tweener.add(objects_to_tween[i], positions_to_tween[i])
 	
 	if event is InputEventMouseButton:
 		if event.pressed:		
-			tweener.execute()
+			print(_get_music())
+
+
+func _get_music() -> String:
+	print("_background_music at start of _get_music: ", _background_music)
+	print("_played_music at start of _get_music: ", _played_music)
+
+	var return_music: String
+
+	if _background_music.size() == 1:
+		return_music = _background_music[0]
+		_background_music.remove_at(0)
+		_background_music.append_array(_played_music)
+		_played_music.clear()	
+		_played_music.append(return_music)
+
+		print("_background_music at return of _get_music: ", _background_music)
+		print("_played_music at return of _get_music: ", _played_music)
+
+		return return_music
+
+	return_music = _background_music.pick_random()
+	_played_music.append(return_music)
+	_background_music.erase(return_music)
+
+	print("_background_music at return of _get_music: ", _background_music)
+	print("_played_music at return of _get_music: ", _played_music)
+
+	return return_music
+				
