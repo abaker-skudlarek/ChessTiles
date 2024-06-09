@@ -4,7 +4,7 @@ extends ColorRect
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-const SETTINGS_SCENE_PATH: String = "res://Scenes/Screens/settings_screne.tscn"
+const SETTINGS_SCENE_PATH: String = "res://Scenes/Screens/settings_screen.tscn"
 
 var main_scene: Node = preload("res://Scenes/main.tscn").instantiate()
 

@@ -1,0 +1,75 @@
+[gd_scene load_steps=3 format=3 uid="uid://dy10lt1y70htp"]
+
+[ext_resource type="Script" path="res://Scripts/Screens/settings_screne.gd" id="1_oc7qj"]
+[ext_resource type="Script" path="res://Scripts/UI/music_slider.gd" id="2_jcd6e"]
+
+[node name="SettingsScreen" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.227451, 0.243137, 0.309804, 1)
+script = ExtResource("1_oc7qj")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
+
+[node name="AllElementsContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SettingsLabel" type="Label" parent="MarginContainer/AllElementsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="MarginContainer/AllElementsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MusicContainer" type="VBoxContainer" parent="MarginContainer/AllElementsContainer"]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="MarginContainer/AllElementsContainer/MusicContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+size_flags_stretch_ratio = 2.75
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 21
+text = "Music"
+horizontal_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="MarginContainer/AllElementsContainer/MusicContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 0.5
+script = ExtResource("2_jcd6e")
+
+[node name="Spacer2" type="Control" parent="MarginContainer/AllElementsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="OkButton" type="Button" parent="MarginContainer/AllElementsContainer"]
+layout_mode = 2
+text = "OK"
+
+[connection signal="value_changed" from="MarginContainer/AllElementsContainer/MusicContainer/MusicSlider" to="MarginContainer/AllElementsContainer/MusicContainer/MusicSlider" method="_on_value_changed"]
+[connection signal="pressed" from="MarginContainer/AllElementsContainer/OkButton" to="." method="_on_ok_button_pressed"]
