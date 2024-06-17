@@ -12,10 +12,5 @@ const AUDIO_BUS_NAME: String = "Master"
 # -- Private Functions -- #
 # ------------------------------------------------------------------------------------------------ #
 
-func _ready() -> void:
-	value = db_to_linear(AudioServer.get_bus_volume_db(_audio_bus))
-
-# ------------------------------------------------------------------------------------------------ #
-
 func _on_value_changed(new_value: float) -> void:
 	AudioServer.set_bus_volume_db(_audio_bus, linear_to_db(new_value))
