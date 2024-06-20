@@ -63,6 +63,12 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="NewHighScoreLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.705882, 0.235294, 0.298039, 1)
+text = "New High Score!"
+horizontal_alignment = 1
+
 [node name="Spacer2" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var _final_score_sign: Label = $VBoxContainer/HBoxContainer/FinalScoreSignLabel
 @onready var _final_score_total: Label = $VBoxContainer/HBoxContainer/FinalScoreTotalLabel
+@onready var _new_high_score: Label = $VBoxContainer/NewHighScoreLabel
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Private Functions -- #
@@ -25,6 +26,19 @@ func _on_end_game_score_calculated(final_score: int) -> void:
 		_final_score_sign.text = "-"	
 	else:
 		_final_score_sign.text = ""
+
+	print("high score in end game score calculated: ", ResourceManager.save_data.high_score)
+	
+	# TODO: Really should not be making UI code save the high score. But we'll fix that in the next game 
+	if final_score > ResourceManager.save_data.high_score:
+		print("final score is bigger than high score")
+		_new_high_score.visible = true
+		ResourceManager.save_data.high_score = final_score
+		ResourceManager.save_data.save()
+		print("saved high score")
+		print("new high score: ", ResourceManager.save_data.high_score)
+	else:
+		_new_high_score.visible = false
 
 # ------------------------------------------------------------------------------------------------ #
 
