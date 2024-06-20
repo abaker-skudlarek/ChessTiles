@@ -46,6 +46,9 @@ func _score_game(signal_arguments: Dictionary) -> void:
 
 	SignalBus.emit_signal("end_game_score_calculated", _total_score)
 
+	if _total_score > SaveDataManager.save_data.high_score:
+		SignalBus.emit_signal("new_high_score", _total_score)
+
 	GameManager.change_state(GameManager.GameState.GAME_OVER)
 
 # ------------------------------------------------------------------------------------------------ #
