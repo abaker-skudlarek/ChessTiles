@@ -13,15 +13,19 @@ var main_scene: Node = preload("res://Scenes/main.tscn").instantiate()
 # ------------------------------------------------------------------------------------------------ #
 
 func _ready() -> void:
-	var display_high_score: int = ResourceManager.save_data.high_score
-	print("Display high score: ", display_high_score)
-	
-	# First ever score (before ever playing) is -999. Just display 0 if it's the first time playing. A new score will get overwritten after
-	# finishing the first game
-	if display_high_score == -999:
-		display_high_score = 0
+	_display_high_score()
 
-	$MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/HighScoreNumber.text = str(display_high_score)
+# ------------------------------------------------------------------------------------------------ #
+
+func _display_high_score() -> void:
+	var display_high_score: int = SaveDataManager.save_data.high_score
+	
+	# If the SaveData's score is the default score, display "Not Set". This means that it's the first time playing,
+	# and the default score will be updated after finishing the first game
+	if display_high_score == SaveData.DEFAULT_HIGH_SCORE:
+		$MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/HighScoreNumber.text = "Not Set"
+	else:
+		$MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/HighScoreNumber.text = str(display_high_score)
 
 # ------------------------------------------------------------------------------------------------ #
 

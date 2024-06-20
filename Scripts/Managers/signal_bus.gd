@@ -28,7 +28,6 @@ signal slide_move_finished
 signal chess_move_finished
 signal pieces_merged
 signal piece_taken(taken_piece_name: String)
-signal board_tweening
 
 # ------------------------------------------------------------------------------------------------ #
 # -- Piece Signals -- #
@@ -52,3 +51,9 @@ signal chess_move_gained(num_moves_gained: int)
 # ------------------------------------------------------------------------------------------------ #
 signal end_game_score_calculated(end_game_score: int) 
 signal piece_scored(piece_value: int)
+
+# ------------------------------------------------------------------------------------------------ #
+# -- Persistent Date Signals -- #
+# ------------------------------------------------------------------------------------------------ #
+signal new_high_score(score: int)
+signal music_volume_updated(volume: float)

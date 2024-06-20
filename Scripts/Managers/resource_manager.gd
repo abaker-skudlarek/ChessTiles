@@ -8,7 +8,6 @@ extends Node
 # -- Variables -- #
 # ------------------------------------------------------------------------------------------------ #
 
-var save_data: SaveData
 
 @onready var move_overlays: Dictionary = {
 	"empty": preload("res://Scenes/Board/empty_move_overlay.tscn"),
@@ -34,11 +33,3 @@ var save_data: SaveData
 	"enemy_queen": preload("res://Scenes/Pieces/Enemy/enemy_queen.tscn"),
 	"enemy_king": preload("res://Scenes/Pieces/Enemy/enemy_king.tscn")
 }
-
-# ------------------------------------------------------------------------------------------------ #
-# -- Private Functions -- #
-# ------------------------------------------------------------------------------------------------ #
-
-func _ready() -> void:
-	save_data = SaveData.load_or_create()
-	print("high score in resource_manager: ", save_data.high_score)

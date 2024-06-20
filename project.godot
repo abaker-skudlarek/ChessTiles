@@ -18,6 +18,8 @@ config/features=PackedStringArray("4.2", "Forward Plus")
 
 SignalBus="*res://Scripts/Managers/signal_bus.gd"
 ResourceManager="*res://Scripts/Managers/resource_manager.gd"
+SaveDataManager="*res://Scripts/Managers/save_data_manager.gd"
+SoundManager="*res://Scripts/Managers/sound_manager.gd"
 GameManager="*res://Scripts/Managers/game_manager.gd"
 InputManager="*res://Scripts/Managers/input_manager.gd"
 PieceSpawnManager="*res://Scripts/Managers/piece_spawn_manager.gd"
